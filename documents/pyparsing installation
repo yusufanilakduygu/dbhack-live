@@ -2,6 +2,8 @@ https://pypi.python.org/pypi/pyparsing/2.2.0
 pyparsing-2.2.0.tar.gz (md5) bu dosyayı indirdim ve 
 C:\Python361  directörüsü altına unzip ettim
 C:\Python361\pyparsing-2.2.0   bu directory altında çalışır şekilde duruyor.
+PYTONPATH environment variable içine  C:\Python361\pyparsing-2.2.0  koymak gerekebilir.
+Bu değişkeni değiştirdiğinde ; Makine restart
 
 from pyparsing import *
 
