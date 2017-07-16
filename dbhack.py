@@ -1,6 +1,11 @@
+"""
+
+oracle_ping -server dsds -port 12
+
+"""
+from dbhackparser import *
 import os
 from OracleModules import *
-
 from cmd2 import Cmd
 
 
@@ -22,6 +27,5 @@ class REPL(Cmd):
 
 
 if __name__ == '__main__':
-    print(parse_ping("-server x, y   -port 123-67; "))
     app = REPL()
     app.cmdloop()
