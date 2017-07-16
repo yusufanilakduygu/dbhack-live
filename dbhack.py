@@ -1,5 +1,5 @@
 import os
-from BlackBoxTests import OracleModules
+from OracleModules import *
 
 from cmd2 import Cmd
 
@@ -9,18 +9,19 @@ class REPL(Cmd):
    
 
     prompt = "dbhack> "
-    intro = "dbhack program ver 1.0 Developed by Y. Anıl Akduygu Sile/Istanbul"
+    intro = "dbhack program ver 1.2 Developed by Y. Anıl Akduygu Sile/Istanbul"
 
     def __init__(self):
         Cmd.__init__(self)
 
-    def do_tnsping (self,args):
-        OracleModules.tnsping(args)
+    def do_oracle_ping(self,args):
+        oracle_ping(args)
 
-    def do_tnsversion (self,args):
-        OracleModules.tnsversion(args)
+    def do_oracle_version(self,args):
+        oracle_version(args)
 
 
 if __name__ == '__main__':
+    print(parse_ping("-server x, y   -port 123-67; "))
     app = REPL()
     app.cmdloop()
