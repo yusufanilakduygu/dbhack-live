@@ -1,6 +1,7 @@
 """
 
 oracle_ping -server dsds -port 12
+oracle_version -server dsds -port 12
 
 """
 from dbhackparser import *
