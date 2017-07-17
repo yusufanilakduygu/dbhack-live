@@ -13,3 +13,13 @@ six-1.10.0-py2.py3-none-any.whl
 c:\python36\Scripts>pip install six-1.10.0-py2.py3-none-any.whl
 
 pyperclip'i indir ve onuda yükle
+
+https://github.com/asweigart/pyperclip
+
+Download et
+
+Zip'i python altında biryere unzip et ve PYTHONPATH'e bu drirectory 'yü ekle
+
+MAkine restart
+
+
