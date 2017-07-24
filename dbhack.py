@@ -37,12 +37,19 @@ class REPL(Cmd):
     def do_commands(self,args):
         " Prints used command names , type help commandname for more information "
         print(' --> oracle_ping')
-        print(' --> oracle_version')   
+        print(' --> oracle_version')
 
+    def do_version(self,args):
+        print('')
+        print(" dbhack ver 1.0 Developed bu Y. Anıl Akduygu at Sile/Istanbul ")
+        print(" ")
+
+    def do_exit(self,args):
+        exit()
 
 if __name__ == '__main__':
     print(' ')
-    print("dbhack program ver 1.2 Developed by Y. Anıl Akduygu Sile/Istanbul")
+    print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu Sile/Istanbul")
     print(' You can use below commands')
     print(' --> commands')
     print(' --> oracle_version')

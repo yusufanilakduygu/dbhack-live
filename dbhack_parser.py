@@ -26,11 +26,19 @@ def parse_ping(pcmd):
     port_parser="-port"+  Group(Or([ portrange ,delimitedList(port,",") ])).setResultsName('port')+";"
 
     Oracle_tnsping_parser=server_parser+port_parser
-    result= Oracle_tnsping_parser.parseString(pcmd)
+    try:
+        result= Oracle_tnsping_parser.parseString(pcmd)
+    except ParseException:
+        print('')
+        print ('Error No    : Error-01 ')
+        print ('Module      : ParseException from dbhack_parser.parse_ping ')
+        print ('Explanation : Your command can not be parsed please type')
+        print ('              help command_name to see command samples')
+        print('')
+        result=['Error-01']
     return result
 
-def bosluk():
-    print('xxx')
+
 
 
 
