@@ -46,25 +46,33 @@ def parse_ping(pcmd):
     print(result['server'])
 
     # Server is ip range
+
+    server_list =list(result['server'])
+    port_list   =list(result['port'])
     
-    if '-' in list(result['server']):
+    if '-' in server_list :
         print( 'in server list')
         
-    # port is in ip range   
-    if '-' in list(result['port']):
+    # port is in ip range
+    
+    if '-' in port_list:
         portrange_list=list()
-        port_start=int(list(result['port'][0]))
-        port_end  =int(list(result['port'][2]))
-        print(port_start,port_end,'******')
-        if port_start >= port_end :
-                print('')
-                print ('Error No    : Error-02 ')
-                print ('Module      : ParseException from dbhack_parser.parse_ping ')
-                print ('Explanation : Port Range is not correct')
-                print('')
-                result=['Error-01']    
-
-    print(result['port'])
+        print('****',port_list[0],port_list[2])
+        if int(port_list[0])  >=  int(port_list[2]):
+            print('')
+            print ('Error No    : Error-02 ')
+            print ('Module      : ParseException from dbhack_parser.parse_ping ')
+            print ('Explanation : Port Range is not correct')
+            print('')
+            result=['Error-01']
+            return result
+        else:
+           # Prepare port range list
+           for x in range(int(port_list[0]),int(port_list[2])+1):
+               portrange_list.append(x)
+        print(portrange_list)
+               
+            
     return result
 
 
