@@ -1,6 +1,7 @@
 
 from dbhack_parser import *
 import socket
+import itertools
 
 
 def tns_ping(p_servername,p_port):
@@ -45,13 +46,14 @@ def tns_ping(p_servername,p_port):
 
 def oracle_ping(args):
     parsed_command=parse_ping(args+" ;")
-    if parsed_command[0] != 'Error-01':
-        # if only one server and port is entered in the command 
-        if len(parsed_command['server']) == 1 and len(parsed_command['port']) == 1:
-            tns_ping(parsed_command['server'][0],int(parsed_command['port'][0]))
-        else:
-            print('is not defined yet')
+    if parsed_command[0] == 'Error':
+            return
+    else:
+            print('iter')
+            for i in itertools.product( args[0], args[1]):
+                tns_ping(i[0],i[1])
     return
+
 
 def oracle_version(args):
     parsed_command=parse_ping(args+" ;")

@@ -1,7 +1,7 @@
 """
 
-oracle_ping -server dsds -port 12
-oracle_version -server dsds -port 12
+oracle_ping -server 192.200.11.9  -port 1521
+oracle_version -server 192.200.11.9  -port 1521
 
 """
 from dbhack_parser import *
