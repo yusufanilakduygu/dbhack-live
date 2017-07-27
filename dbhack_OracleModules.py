@@ -49,8 +49,7 @@ def oracle_ping(args):
     if parsed_command[0] == 'Error':
             return
     else:
-            print('iter')
-            for i in itertools.product( args[0], args[1]):
+            for i in itertools.product( parsed_command[0], parsed_command[1]):
                 tns_ping(i[0],i[1])
     return
 

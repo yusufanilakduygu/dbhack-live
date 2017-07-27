@@ -1,7 +1,10 @@
 """
 
 oracle_ping -server 192.200.11.9  -port 1521
-oracle_version -server 192.200.11.9  -port 1521
+oracle_ping  -server 10.51.16.27  -port 1605
+oracle_ping -server 192.200.11.9  -port 1521
+
+oracle_ping  -server atlas.sys.yapikredi.com.tr  -port 1500-1510
 
 """
 from dbhack_parser import *
