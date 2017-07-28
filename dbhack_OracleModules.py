@@ -8,15 +8,17 @@ def tns_ping(p_servername,p_port):
     sock= socket.socket() 
     try:
         print('')
-        print (' Connection : '+p_servername+' : '+str(p_port)+'...', end="")
+        print (' Connection : '+p_servername+' : '+str(p_port)+'...')
         sock.connect((p_servername, p_port))
     except Exception:
-        print('not connected')
+        print('  Not Connected to the port')
         print('')
         sock.close()
         return
-    print('CONNECTED')	
- 
+    print('  Connected to the port')	
+
+    # Message sent: (CONNECT_DATA=(COMMAND=ping))
+    # to check listener is running
     
     send_msg= bytearray ([0x00, 0x57, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 
     0x01, 0x3a, 0x01, 0x2c, 0x00, 0x00, 0x20, 0x00, 
@@ -32,16 +34,53 @@ def tns_ping(p_servername,p_port):
 
     sock.send(send_msg)
     msg = sock.recv(2048)
-    sock.close()
     decoded_msg=msg.decode('ascii')
     i=decoded_msg.find('ERR=0')
     if i != -1:
-        print ("   Oracle Listener Found  ...",end="")  
-        print('Listener Name : ',msg.decode('ascii')[msg.decode('ascii').find("ALIAS=")+6:-2])
+        print ('  Oracle Listener Found')  
+        print('    Listener Name : ',msg.decode('ascii')[msg.decode('ascii').find("ALIAS=")+6:-2], end="")
         print()
     else:
         print ("Oracle Listener Not Found")
         print()
+
+  # message to send (CONNECT_DATA=(COMMAND=version))
+
+    send_msg= bytearray ([
+    0x00, 0x5a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 
+    0x01, 0x36, 0x01, 0x2c, 0x00, 0x00, 0x08, 0x00, 
+    0x7f, 0xff, 0x7f, 0x08, 0x00, 0x00, 0x00, 0x01, 
+    0x00, 0x20, 0x00, 0x3a, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x00, 0x34, 0xe6, 0x00, 0x00, 
+    0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x00, 0x00, 0x28, 0x43, 0x4f, 0x4e, 0x4e, 0x45, 
+    0x43, 0x54, 0x5f, 0x44, 0x41, 0x54, 0x41, 0x3d, 
+    0x28, 0x43, 0x4f, 0x4d, 0x4d, 0x41, 0x4e, 0x44, 
+    0x3d, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 
+    0x29, 0x29 ])
+
+
+    sock.close()
+    sock= socket.socket()
+    sock.connect((p_servername, p_port))
+    
+    sock.send(send_msg)
+    msg = sock.recv(2048)
+    ascii_message=msg.decode('ascii')
+    vssnum_loc=ascii_message.find('VSNNUM=')
+    version_number=hex(int(ascii_message[vssnum_loc+7:vssnum_loc+7+9]))
+    sock.close()
+    print('    DB version    : ' ,
+       str(int(version_number[2:3],16))+'.'+
+       str(int(version_number[3:4],16))+'.'+
+       str(int(version_number[4:6],16))+'.'+
+       str(int(version_number[6:7],16))+'.'+
+       str(int(version_number[7:9],16))
+      )
+    print()
+
+        
     return
 
 def oracle_analyze(args):
