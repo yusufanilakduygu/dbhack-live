@@ -44,7 +44,7 @@ def tns_ping(p_servername,p_port):
         print()
     return
 
-def oracle_ping(args):
+def oracle_analyze(args):
     parsed_command=parse_ping(args+" ;")
     if parsed_command[0] == 'Error':
             return

@@ -1,8 +1,8 @@
 """
 
-oracle_ping -server 192.200.11.9  -port 1521
-oracle_ping  -server 10.51.16.27  -port 1605
-oracle_ping -server 192.200.11.9  -port 1521
+oracle_analyze -server 192.200.11.9  -port 1521
+oracle_analyze  -server 10.51.16.27  -port 1605
+oracle_analyze -server 192.200.11.9  -port 1521
 
 oracle_ping  -server atlas.sys.yapikredi.com.tr  -port 1500-1510
 
@@ -23,24 +23,18 @@ class REPL(Cmd):
     def __init__(self):
         Cmd.__init__(self)
 
-    def do_oracle_ping(self,args):
+    def do_oracle_analyze(self,args):
         """ oracle_ping ping a server to check Oracle database 
             oracle_ping -server servename1,servername2 -port 1454,1455  
             oracle_ping -server 192.168.45.1000-1750   -port 1454-1700
         """
-        oracle_ping(args)
+        oracle_analyze(args)
 
-    def do_oracle_version(self,args):
-        """ oracle_ping version tries to find Oracle database version
-            oracle_ping -server servename1,servername2 -port 1454,1455  
-            oracle_ping -server 192.168.45.1000-1750   -port 1454-1700
-        """
-        oracle_version(args)
 
     def do_commands(self,args):
         " Prints used command names , type help commandname for more information "
-        print(' --> oracle_ping')
-        print(' --> oracle_version')
+        print(' --> oracle_analyze')
+
 
     def do_version(self,args):
         print('')
@@ -55,9 +49,7 @@ if __name__ == '__main__':
     print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu Sile/Istanbul")
     print(' You can use below commands')
     print(' --> commands')
-    print(' --> oracle_version')
-    print(' --> oracle_ping')
-    print(' --> oracle_version')
+    print(' --> oracle_analyze')
     print(' ')
     print(' Type help CommandName to get much more information')
     print(' ')
