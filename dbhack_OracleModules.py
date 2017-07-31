@@ -67,7 +67,7 @@ def tns_ping(p_servername,p_port):
     
     sock.send(send_msg)
     msg = sock.recv(2048)
-    ascii_message=msg.decode('ascii')
+    ascii_message=str(msg)
     vssnum_loc=ascii_message.find('VSNNUM=')
     version_number=hex(int(ascii_message[vssnum_loc+7:vssnum_loc+7+9]))
     sock.close()

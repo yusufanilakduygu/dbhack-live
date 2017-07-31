@@ -46,7 +46,7 @@ print(parse_ping("-server x,y,z  -port 125,65535; "))
 """
 
 def parse_ping(pcmd):
-    servername=Word(nums+alphas+".")
+    servername=Word(nums+alphas+"."+"-")
     portrange=Word(nums)+"-"+Word(nums)
     port=Word(nums)
     ipField = Word(nums, max=3)
