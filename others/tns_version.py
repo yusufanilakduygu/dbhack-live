@@ -2,7 +2,7 @@ import socket
 
 def tns_ping(p_servername,p_port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    result = sock.connect_ex((p_servername, p_port))
+    result = sock.connect_ex(('192.200.11.9', 1521))
     print('Connection Result  >> ' , result)
  
 
