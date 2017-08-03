@@ -23,17 +23,17 @@ class REPL(Cmd):
     def __init__(self):
         Cmd.__init__(self)
 
-    def do_oracle_analyze(self,args):
-        """ oracle_ping ping a server to check Oracle database 
-            oracle_ping -server servename1,servername2 -port 1454,1455  
-            oracle_ping -server 192.168.45.1000-1750   -port 1454-1700
+    def do_ora_chk(self,args):
+        """ ora_chk ping a server to check Oracle database 
+            ora_chk -s  servename1,servername2 -p  1454,1455  
+            ora_chk -s  192.168.45.1000-1750   -p  1454-1700
         """
         oracle_analyze(args)
 
 
     def do_commands(self,args):
         " Prints used command names , type help commandname for more information "
-        print(' --> oracle_analyze')
+        print(' --> ora_chk -s [servernames] -p [ports]')
 
 
     def do_version(self,args):
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu Sile/Istanbul")
     print(' You can use below commands')
     print(' --> commands')
-    print(' --> oracle_analyze')
+    print(' --> ora_chk')
     print(' ')
     print(' Type help CommandName to get much more information')
     print(' ')

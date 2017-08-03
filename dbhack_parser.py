@@ -52,9 +52,9 @@ def parse_ping(pcmd):
     ipField = Word(nums, max=3)
     iprange =  ipField + "." + ipField + "." + ipField + "." + ipField + "-" + ipField
 
-    server_parser="-server"+Group(Or([iprange, delimitedList(servername)])).setResultsName('server')
+    server_parser="-s"+Group(Or([iprange, delimitedList(servername)])).setResultsName('server')
 
-    port_parser="-port"+  Group(Or([ portrange ,delimitedList(port,",") ])).setResultsName('port')+";"
+    port_parser="-p"+  Group(Or([ portrange ,delimitedList(port,",") ])).setResultsName('port')+";"
 
     Oracle_tnsping_parser=server_parser+port_parser
     
