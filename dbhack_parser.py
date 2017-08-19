@@ -2,61 +2,57 @@ from pyparsing import *
 from dbhack_error_module import error_module
 
 """
-
 25.07.2017
-
 This function parses ping commands
 It has two parts : One part is the server parameters with -server option
 other part is the port part with -port option
-
 Server part can contain  ; server names , ip names with comma ;  -server 192.178.10.4, db.local.org
 or this part can contains a network segment like : 192.168.10.1-45
 There is no more selection for this option
-
 Port part can contain; port numbers or one port range like;
-
 1521,1522,1527   or  1500-1600
 There is no more selection for this option
-
 return_list is the output of this function;  This list contains two lists
-
 return_list[0] --> Server list
 return_list[1] --> port list in number format
-
-
-
-
 Sample Calls:
-
-ping -server,ip,servername -port port1,port2
-ping -server xxx.xxx.xxx.xx-xx -port port1-port2
--server 192.178.45.12, 123.56.56.78  -port 123,678  ; 
-
-print(parse_ping("-server x, y   -port 123-67; "))
-print(parse_ping("-server x, y   -port 123,67; "))
-print(parse_ping("-server 172.345.456.12   -port 123-67; "))
-print(parse_ping("-server 172.345.456.12-20   -port 123,67; "))
-print(parse_ping("-server 172.345.456.12-25   -port 67-123; "))
-
-print(parse_ping("-server 172.345.456.256   -port 125-123; "))
-print(parse_ping("-server 172.345.456.256   -port 125-65536; "))
-
-print(parse_ping("-server x,y,z  -port 125,65535; "))
-
+ping -s ip,servername -p port1,port2
+ping -s xxx.xxx.xxx.xx-xx -p port1-port2
+print(parse_ping("-s kw1-1.com  -p  125 ; "))
+print(parse_ping("-s kw1-1.com  -p  125 -127; "))
+print(parse_ping("-s 192.200.11.9-10  -p  125 -126; "))
+print(parse_ping("-s 192.200.11.9   -p  125 ; "))
+print(parse_ping("-s 192.200.11.9-10   -p  125 , 126; "))
+print(parse_ping("-s   a2  -p  125  ; "))
+print(parse_ping("-s 192.200.11.9, 192.200.11.9 ,a3, 192.200.11.12  -p  125 , 126; "))
+print(parse_ping("-s 192.200.11.9-10,192.200.11.9   -p  125 -126; ")) Gives error
+print(parse_ping("-s kw1-1.com, kw2-1.com  -p  125 -127; "))
+print(parse_ping("-s kw1-1.com, kw2-1.com , 192.200.11.9, 192.200.11.11 -p  125 -127; "))
 """
 
 def parse_ping(pcmd):
-    servername=Word(nums+alphas+"."+"-")
-    portrange=Word(nums)+"-"+Word(nums)
-    port=Word(nums)
+
     ipField = Word(nums, max=3)
-    iprange =  ipField + "." + ipField + "." + ipField + "." + ipField + "-" + ipField
 
-    server_parser="-s"+Group(Or([iprange, delimitedList(servername)])).setResultsName('server')
+    full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
+    
+    servername=(Combine(Word(alphas,min=1)+Word(alphas+nums+"."+"-")))
 
-    port_parser="-p"+  Group(Or([ portrange ,delimitedList(port,",") ])).setResultsName('port')+";"
+    servernames= Or([full_ip , servername])
+    
+    portrange=Word(nums)+"-"+Word(nums)
+    
+    port=Word(nums)
+    
 
-    Oracle_tnsping_parser=server_parser+port_parser
+    iprange     =  ipField + "." + ipField + "." + ipField + "." + ipField + "-" + ipField
+    
+    
+    server_parser="-s"+Group(Or([  iprange , delimitedList(servernames)])).setResultsName('server')
+
+    port_parser="-p"+  Group(Or([ portrange ,delimitedList(port,",") ])).setResultsName('port')
+
+    Oracle_tnsping_parser= (server_parser & port_parser )+";"
     
     return_list=list()
     
@@ -69,7 +65,7 @@ def parse_ping(pcmd):
         
 
    
-
+    
     server_list =list(parse_result['server'])
     port_list   =list(parse_result['port'])
 
@@ -87,11 +83,12 @@ def parse_ping(pcmd):
             return return_list
         
         #Check IP less than 255
+
         
-        if int(server_list[6]) > 255 or int(server_list[8]) or int(server_list[0]) > 255 or int(server_list[2]) > 255 or int(server_list[4]) > 255:
+        if int(server_list[6]) > 255 or int(server_list[8]) > 255 or int(server_list[0]) > 255 or int(server_list[2]) > 255 or int(server_list[4]) > 255:
             error_module('parse_ping_040','IP range condition check at dbhack_parser.parse_ping','IPs greater than 255')
             return_list=['Error']
-            return return_list
+            return return_list 
         
         # Prepare IPs
         
@@ -141,15 +138,3 @@ def parse_ping(pcmd):
           return_list.append(portrange_list)
           
     return return_list
-
-
-
-
-
-
-
-
-
-
-
-

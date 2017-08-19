@@ -1,10 +1,11 @@
 """
 
-oracle_analyze -server 192.200.11.9  -port 1521
-oracle_analyze  -server 10.51.16.27  -port 1605
-oracle_analyze -server 192.200.11.9  -port 1521
+ora_chk -s 192.200.11.9  -p 1521
+ora_chk -s 192.200.11.9 , 192.200.11.10  -p 1605
+ora_chk -s 192.200.11.9 , 192.200.11.10 , a1.com  -p 1605
+ora_chk -s  192.200.11.9-10  -p  1521
 
-oracle_ping  -server atlas.sys.yapikredi.com.tr  -port 1500-1510
+ora_chk  -s  atlas.sys.yapikredi.com.tr  -p  1500-1510
 
 """
 from dbhack_parser import *
@@ -24,9 +25,16 @@ class REPL(Cmd):
         Cmd.__init__(self)
 
     def do_ora_chk(self,args):
+
+        # ora_chk -s 192.200.11.9  -p 1521
+        # ora_chk -s 192.200.11.9 , 192.200.11.10  -p 1605
+        # ora_chk -s 192.200.11.9 , 192.200.11.10 , a1.com  -p 1605
+        # ora_chk -s  192.200.11.9-10  -p  1521
+        # ora_chk  -s  atlas.sys.yapikredi.com.tr  -p  1500-1510
+        
         """ ora_chk ping a server to check Oracle database 
             ora_chk -s  servename1,servername2 -p  1454,1455  
-            ora_chk -s  192.168.45.1000-1750   -p  1454-1700
+            ora_chk -s  192.200.11.9-11   -p  1521-1522
         """
         oracle_analyze(args)
 
