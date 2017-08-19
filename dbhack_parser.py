@@ -138,3 +138,122 @@ def parse_ping(pcmd):
           return_list.append(portrange_list)
           
     return return_list
+
+# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid ORCL; "))
+
+
+def parse_sid(pcmd):
+
+    ipField = Word(nums, max=3)
+
+    full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
+    
+    servername=(Combine(Word(alphas,min=1)+Word(alphas+nums+"."+"-")))
+
+    servernames= Or([full_ip , servername])
+    
+    portrange=Word(nums)+"-"+Word(nums)
+    
+    port=Word(nums)
+
+    sid=Word(alphas)
+    
+
+    iprange     =  ipField + "." + ipField + "." + ipField + "." + ipField + "-" + ipField
+    
+    
+    server_parser="-s"+Group(Or([  iprange , delimitedList(servernames)])).setResultsName('server')
+
+    port_parser="-p"+  Group(Or([ portrange ,delimitedList(port,",") ])).setResultsName('port')
+
+    # sid_file kısmını ekle 
+
+    sid_parser= "-sid"+ Group( delimitedList(sid,",")).setResultsName('sid')
+
+    Oracle_tnsping_parser= (server_parser & port_parser  & sid_parser)+";"
+    
+    return_list=list()
+    
+    try:
+        parse_result= Oracle_tnsping_parser.parseString(pcmd)
+    except ParseException:
+        error_module('parse_ping_010','ParseException from dbhack_parser.parse_ping','Your command can not be parsed')
+        return_list=['Error']
+        return return_list
+        
+
+   
+    print(parse_result['sid'])
+    server_list =list(parse_result['server'])
+    port_list   =list(parse_result['port'])
+    
+
+    server_range_list=list()
+    
+    # Server is ip range
+    if '-' in server_list :
+        
+        # Check ip range list
+        
+        if int(server_list[6])  >=  int(server_list[8]):
+            error_module('parse_ping_030','IP range condition check at dbhack_parser.parse_ping','IP Range is not correct')
+            return_list=['Error']
+            return return_list
+        
+        #Check IP less than 255
+
+        
+        if int(server_list[6]) > 255 or int(server_list[8]) > 255 or int(server_list[0]) > 255 or int(server_list[2]) > 255 or int(server_list[4]) > 255:
+            error_module('parse_ping_040','IP range condition check at dbhack_parser.parse_ping','IPs greater than 255')
+            return_list=['Error']
+            return return_list 
+        
+        # Prepare IPs
+        
+        domain_ip = server_list[0]+'.'+server_list[2]+'.'+server_list[4]+'.'
+        
+        for x in range(int(server_list[6]),int(server_list[8])+1):
+            server_range_list.append(domain_ip+str(x))
+            
+        return_list.append(server_range_list)
+                
+    else:
+       # if there is no ip range put server_list into return list directly
+        return_list.append(server_list)
+        
+    # port is in ip range
+
+    portrange_list=list()
+    
+    if '-' in port_list:
+        
+    # if there is port range , produce port range list
+    
+        if int(port_list[0])  >=  int(port_list[2]):
+            error_module('parse_ping_020','Port range condition check at dbhack_parser.parse_ping','Port Range is not correct')
+            return_list=['Error']
+            return return_list
+        
+        if int(port_list[0])  > 65535 or   int(port_list[2]) > 65535 :
+            error_module('parse_ping_050','Port range condition check at dbhack_parser.parse_ping','Port is greater than 65535')
+            return_list=['Error']
+            return return_list
+        
+        # Prepare port range list
+        for x in range(int(port_list[0]),int(port_list[2])+1):
+            portrange_list.append(x)
+
+        return_list.append(portrange_list)
+    else:
+          if len([ x for x in port_list if int(x) > 65535]):
+            error_module('parse_ping_060','Port range condition check at dbhack_parser.parse_ping','Port numbers can not be greater than 65535')
+            return_list=['Error']
+            return return_list
+        
+          for i in range(len(port_list)):
+              portrange_list.append(int(port_list[i]))
+
+          return_list.append(portrange_list)
+          
+    return return_list
+
