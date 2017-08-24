@@ -30,7 +30,7 @@ class REPL(Cmd):
         # ora_chk -s 192.200.11.9 , 192.200.11.10  -p 1605
         # ora_chk -s 192.200.11.9 , 192.200.11.10 , a1.com  -p 1605
         # ora_chk -s  192.200.11.9-10  -p  1521
-        # ora_chk  -s  atlas.sys.yapikredi.com.tr  -p  1500-1510
+        # ora_chk  -s  atlas.sys.yapikredi.com.tr  -p  1500
         
         """ ora_chk ping a server to check Oracle database 
             ora_chk -s  servename1,servername2 -p  1454,1455  

@@ -36,7 +36,7 @@ def parse_ping(pcmd):
 
     full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
     
-    servername=(Combine(Word(alphas,min=1)+Word(alphas+nums+"."+"-")))
+    servername=Combine(Word(alphas)+Word(alphas+nums+"."+"-"))
 
     servernames= Or([full_ip , servername])
     
@@ -140,6 +140,7 @@ def parse_ping(pcmd):
     return return_list
 
 # print(parse_sid("-s 192.200.11.9-10  -p  125  -sid ORCL; "))
+# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid_file  abc1 "))
 
 
 def parse_sid(pcmd):
@@ -168,9 +169,15 @@ def parse_sid(pcmd):
 
     # sid_file kısmını ekle 
 
-    sid_parser= "-sid"+ Group( delimitedList(sid,",")).setResultsName('sid')
+    sid_name_parser= "-sid"+ Group( delimitedList(sid,",")).setResultsName('sid')
 
-    Oracle_tnsping_parser= (server_parser & port_parser  & sid_parser)+";"
+    file_path=Combine(Word(printables))
+
+    sid_file_parser="-sid_file"+file_path
+
+    sid_parser= sid_file_parser
+
+    Oracle_tnsping_parser= (server_parser & port_parser  & sid_parser ) + ";"
     
     return_list=list()
     
