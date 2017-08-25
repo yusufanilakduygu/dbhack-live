@@ -139,8 +139,8 @@ def parse_ping(pcmd):
           
     return return_list
 
-# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid ORCL; "))
-# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid_file  abc1 "))
+# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid ORCL,KBLIVE,INTBANK; "))
+# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid_file  D:/x/python/workfile ;"))
 
 
 def parse_sid(pcmd):
@@ -173,9 +173,9 @@ def parse_sid(pcmd):
 
     file_path=Combine(Word(printables))
 
-    sid_file_parser="-sid_file"+file_path
+    sid_file_parser="-sid_file"+Group(file_path).setResultsName('sid_file')
 
-    sid_parser= sid_file_parser
+    sid_parser= Or([sid_name_parser,sid_file_parser])
 
     Oracle_tnsping_parser= (server_parser & port_parser  & sid_parser ) + ";"
     
@@ -190,7 +190,7 @@ def parse_sid(pcmd):
         
 
    
-    print(parse_result['sid'])
+    print(parse_result)
     server_list =list(parse_result['server'])
     port_list   =list(parse_result['port'])
     
@@ -261,6 +261,24 @@ def parse_sid(pcmd):
               portrange_list.append(int(port_list[i]))
 
           return_list.append(portrange_list)
-          
+
+    # sid listesinin doldurulmasi
+    
+    sidrange_list=list()
+
+    # sid ler komut icinde girilmis ise direk SID leri komut satirindan al
+    try:
+        sidrange_list=parse_result['sid']
+    except  KeyError:
+        
+    # Burada bir dosya kontrolü yap FileNotFoundError:
+    
+        with open(parse_result['sid_file'][0] ) as f:
+            read_sid=f.read()
+            read_sid_white=read_sid.split()
+            sidrange_list.append(read_sid_white)
+        f.closed        
+    return_list.append(sidrange_list)          
+
     return return_list
 
