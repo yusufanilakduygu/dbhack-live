@@ -83,7 +83,7 @@ def tns_ping(p_servername,p_port):
         
     return
 
-def oracle_analyze(args):
+def ora_chk(args):
     parsed_command=parse_ping(args+" ;")
     if parsed_command[0] == 'Error':
             return
@@ -92,6 +92,14 @@ def oracle_analyze(args):
                 tns_ping(i[0],i[1])
     return
 
+def ora_chk_sid(args):
+    parsed_command=parse_sid(args+" ;")
+    if parsed_command[0] == 'Error':
+            return
+    else:
+            for i in itertools.product( parsed_command[0], parsed_command[1],parsed_command[2]):
+                oracle_sid_test(i[0],i[1],i[2])
+    return
 
 def oracle_version(args):
     parsed_command=parse_ping(args+" ;")
@@ -151,7 +159,7 @@ def oracle_sid_test(p_servername,p_port,p_sid):
     sock= socket.socket() 
     try:
         print('')
-        print (' Connection : '+p_servername+' : '+str(p_port)+'...')
+        print (' Connection : '+p_servername+' : '+str(p_port)+' SID:'+p_sid)
         sock.connect((p_servername, p_port))
     except Exception:
         print('  Not Connected to the port')
@@ -161,10 +169,17 @@ def oracle_sid_test(p_servername,p_port,p_sid):
     print('  Connected to the port')	
 
     sock.send(full_tns_packet)
+
+    correct_returned_message=bytearray([ 0x00,0x08,0x00,0x00,0x0b,0x00,0x00,0x00])
+    
     msg = sock.recv(2048)
+    if msg == correct_returned_message:
+        print ('   '+p_sid+' services on this server')
+    else:
+        print ('   '+p_sid+' does not service on this server')
+        
     sock.close()
-    print('FULL RETURNED MESSAGE')
-    print ('Received  >> ',msg )
+
     return
 
     

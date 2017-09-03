@@ -139,8 +139,9 @@ def parse_ping(pcmd):
           
     return return_list
 
-# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid ORCL,KBLIVE,INTBANK; "))
-# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid_file  D:/x/python/workfile ;"))
+# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid ORCL,KBLIVE,DB3; "))
+# print(parse_sid("-s 192.200.11.9-10  -p  1521  -sid DB3; "))
+# print(parse_sid("-s 192.200.11.9-10  -p  125,126,127  -sid_file  D:/x/python/workfile.txt ;"))
 
 
 def parse_sid(pcmd):
@@ -157,7 +158,7 @@ def parse_sid(pcmd):
     
     port=Word(nums)
 
-    sid=Word(alphas)
+    sid=Word(alphas+nums)
     
 
     iprange     =  ipField + "." + ipField + "." + ipField + "." + ipField + "-" + ipField
@@ -184,13 +185,12 @@ def parse_sid(pcmd):
     try:
         parse_result= Oracle_tnsping_parser.parseString(pcmd)
     except ParseException:
-        error_module('parse_ping_010','ParseException from dbhack_parser.parse_ping','Your command can not be parsed')
+        error_module('parse_sid_010','ParseException from dbhack_parser.parse_sid','Your command can not be parsed')
         return_list=['Error']
         return return_list
         
 
-   
-    print(parse_result)
+ 
     server_list =list(parse_result['server'])
     port_list   =list(parse_result['port'])
     
@@ -264,21 +264,32 @@ def parse_sid(pcmd):
 
     # sid listesinin doldurulmasi
     
-    sidrange_list=list()
+    
 
     # sid ler komut icinde girilmis ise direk SID leri komut satirindan al
     try:
-        sidrange_list=parse_result['sid']
-    except  KeyError:
+        sidrange_list=list(parse_result['sid'])
         
-    # Burada bir dosya kontrolü yap FileNotFoundError:
+    # sid_file girilmis ise
+    
+    except  KeyError:
+
+        sidrange_list=[]
+        
+        file_name = parse_result['sid_file'][0] 
+    
+        try:
+            f=open(file_name)
+        except FileNotFoundError:    
+            error_module('parse_sid_070','SID file open check at dbhack_parser.parse_sid','sid list file does not exist')
+            return_list=['Error']
+            return return_list
     
         with open(parse_result['sid_file'][0] ) as f:
             read_sid=f.read()
-            read_sid_white=read_sid.split()
-            sidrange_list.append(read_sid_white)
-        f.closed        
-    return_list.append(sidrange_list)          
-
+            sidrange_list=read_sid.split()
+        f.closed
+        
+    return_list.append(sidrange_list)
+        
     return return_list
-
