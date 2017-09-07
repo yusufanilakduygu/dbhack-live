@@ -5,7 +5,6 @@ ora_chk -s 192.200.11.9 , 192.200.11.10  -p 1605
 ora_chk -s 192.200.11.9 , 192.200.11.10 , a1.com  -p 1605
 ora_chk -s  192.200.11.9-10  -p  1521
 
-ora_chk  -s  atlas.sys.yapikredi.com.tr  -p  1500-1510
 
 """
 from dbhack_parser import *
@@ -65,8 +64,10 @@ if __name__ == '__main__':
     print(' ')
     print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu Sile/Istanbul")
     print(' You can use below commands')
-    print(' --> commands')
+    print(' --> Current Commands')
+    print(' --> ****************')
     print(' --> ora_chk')
+    print(' --> ora_chk_sid')
     print(' ')
     print(' Type help CommandName to get much more information')
     print(' ')

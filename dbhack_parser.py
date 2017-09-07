@@ -158,7 +158,7 @@ def parse_sid(pcmd):
     
     port=Word(nums)
 
-    sid=Word(alphas+nums)
+    sid=Word(printables)
     
 
     iprange     =  ipField + "." + ipField + "." + ipField + "." + ipField + "-" + ipField
@@ -203,7 +203,7 @@ def parse_sid(pcmd):
         # Check ip range list
         
         if int(server_list[6])  >=  int(server_list[8]):
-            error_module('parse_ping_030','IP range condition check at dbhack_parser.parse_ping','IP Range is not correct')
+            error_module('parse_sid_030','IP range condition check at dbhack_parser.parse_sid','IP Range is not correct')
             return_list=['Error']
             return return_list
         
@@ -211,7 +211,7 @@ def parse_sid(pcmd):
 
         
         if int(server_list[6]) > 255 or int(server_list[8]) > 255 or int(server_list[0]) > 255 or int(server_list[2]) > 255 or int(server_list[4]) > 255:
-            error_module('parse_ping_040','IP range condition check at dbhack_parser.parse_ping','IPs greater than 255')
+            error_module('parse_sid_040','IP range condition check at dbhack_parser.parse_sid','IPs greater than 255')
             return_list=['Error']
             return return_list 
         
@@ -237,12 +237,12 @@ def parse_sid(pcmd):
     # if there is port range , produce port range list
     
         if int(port_list[0])  >=  int(port_list[2]):
-            error_module('parse_ping_020','Port range condition check at dbhack_parser.parse_ping','Port Range is not correct')
+            error_module('parse_sid_020','Port range condition check at dbhack_parser.parse_sid','Port Range is not correct')
             return_list=['Error']
             return return_list
         
         if int(port_list[0])  > 65535 or   int(port_list[2]) > 65535 :
-            error_module('parse_ping_050','Port range condition check at dbhack_parser.parse_ping','Port is greater than 65535')
+            error_module('parse_sid_050','Port range condition check at dbhack_parser.parse_sid','Port is greater than 65535')
             return_list=['Error']
             return return_list
         
@@ -253,7 +253,7 @@ def parse_sid(pcmd):
         return_list.append(portrange_list)
     else:
           if len([ x for x in port_list if int(x) > 65535]):
-            error_module('parse_ping_060','Port range condition check at dbhack_parser.parse_ping','Port numbers can not be greater than 65535')
+            error_module('parse_sid_060','Port range condition check at dbhack_parser.parse_sid','Port numbers can not be greater than 65535')
             return_list=['Error']
             return return_list
         
