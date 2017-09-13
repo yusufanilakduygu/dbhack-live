@@ -25,9 +25,12 @@ print(parse_ping("-s 192.200.11.9   -p  125 ; "))
 print(parse_ping("-s 192.200.11.9-10   -p  125 , 126; "))
 print(parse_ping("-s   a2  -p  125  ; "))
 print(parse_ping("-s 192.200.11.9, 192.200.11.9 ,a3, 192.200.11.12  -p  125 , 126; "))
+print(parse_ping("-s 192.200.11.9, 192.200.11.9 ,a , 192.200.11.12  -p  125 , 126; "))
+print(parse_ping("-s 192.200.11.9, 192.200.11.9 ,ab , 192.200.11.12  -p  125 , 126; "))
 print(parse_ping("-s 192.200.11.9-10,192.200.11.9   -p  125 -126; ")) Gives error
 print(parse_ping("-s kw1-1.com, kw2-1.com  -p  125 -127; "))
 print(parse_ping("-s kw1-1.com, kw2-1.com , 192.200.11.9, 192.200.11.11 -p  125 -127; "))
+parse_ping("-s abc   -p 1521  ; ")
 """
 
 def parse_ping(pcmd):
@@ -36,7 +39,7 @@ def parse_ping(pcmd):
 
     full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
     
-    servername=Combine(Word(alphas)+Word(alphas+nums+"."+"-"))
+    servername=Combine(Word(alphas)+Optional(Word(alphas+nums+"."+"-")))
 
     servernames= Or([full_ip , servername])
     
@@ -292,4 +295,89 @@ def parse_sid(pcmd):
         
     return_list.append(sidrange_list)
         
+    return return_list
+
+
+
+# parse_mssql_ping("-s albatros ;")
+# parse_mssql_ping("-s kw1-1.com    ; ")
+# parse_mssql_ping("-s 1.1.3.3-5    ; ")
+# parse_mssql_ping("-s ab    ; ")
+# parse_mssql_ping("-s ab23    ; ")
+# parse_mssql_ping("-s ab23.    ; ")
+# parse_mssql_ping("-s ab23k    ; ")
+# parse_mssql_ping("-s ab23k4   ; ")
+ 
+
+
+def parse_mssql_ping(pcmd):
+
+    ipField = Word(nums, max=3)
+
+    name = Optional(Word(nums))+ Optional(Word(alphas)) + Optional("-") + Optional(".") 
+
+    full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
+    
+    servername=servername=Combine(Word(alphas)+ Optional(Word(alphas+nums+"."+"-")))
+
+    servernames= Or([full_ip , servername])
+    
+
+    iprange     =  ipField + "." + ipField + "." + ipField + "." + ipField + "-" + ipField
+    
+    
+    server_parser="-s"+Group(Or([  iprange , delimitedList(servernames)])).setResultsName('server')
+
+   
+
+    Oracle_tnsping_parser= (server_parser )+";"
+    
+    return_list=list()
+    
+    try:
+        parse_result= Oracle_tnsping_parser.parseString(pcmd)
+    except ParseException:
+        error_module('parse_mssql_ping_010','ParseException from dbhack_parser.parse_mssql_ping','Your command can not be parsed')
+        return_list=['Error']
+        return return_list
+        
+
+   
+    
+    server_list =list(parse_result['server'])
+
+    server_range_list=list()
+    
+    # Server is ip range
+    if '-' in server_list :
+        
+        # Check ip range list
+        
+        if int(server_list[6])  >=  int(server_list[8]):
+            error_module('parse_mssql_ping_030','IP range condition check at dbhack_parser.parse_mssql_ping','IP Range is not correct')
+            return_list=['Error']
+            return return_list
+        
+        #Check IP less than 255
+
+        
+        if int(server_list[6]) > 255 or int(server_list[8]) > 255 or int(server_list[0]) > 255 or int(server_list[2]) > 255 or int(server_list[4]) > 255:
+            error_module('parse_mssql_ping_040','IP range condition check at dbhack_parser.parse_mssql_ping','IPs greater than 255')
+            return_list=['Error']
+            return return_list 
+        
+        # Prepare IPs
+        
+        domain_ip = server_list[0]+'.'+server_list[2]+'.'+server_list[4]+'.'
+        
+        for x in range(int(server_list[6]),int(server_list[8])+1):
+            server_range_list.append(domain_ip+str(x))
+            
+        return_list.append(server_range_list)
+                
+    else:
+       # if there is no ip range put server_list into return list directly
+        return_list.append(server_list)
+        
+
     return return_list
