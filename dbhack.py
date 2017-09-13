@@ -11,6 +11,7 @@ from dbhack_parser import *
 import os
 from dbhack_OracleModules import *
 from cmd2 import Cmd
+from dbhack_mssqlModules import *
 
 
 class REPL(Cmd):
