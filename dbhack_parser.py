@@ -153,7 +153,7 @@ def parse_sid(pcmd):
 
     full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
     
-    servername=(Combine(Word(alphas,min=1)+Word(alphas+nums+"."+"-")))
+    servername=Combine(Word(alphas)+Optional(Word(alphas+nums+"."+"-")))
 
     servernames= Or([full_ip , servername])
     
