@@ -16,23 +16,24 @@ def mssql_ping(p_server):
 
     server_address = (p_server, 1434)
     message =  bytearray ([0x03])
-
+    print(" ")
+    print (' Connection : '+p_server)
     try:
         sent = sock.sendto(message, server_address)
-
         data, server = sock.recvfrom(4096)
     except Exception as error:
-        print ("An exception was thrown!")
-        print (str(error))
+        print("")
+        print('  Not Connected to SQL Server ' + str(error) )
+        print("")
         return
      
 
     str_data=str(data)
     print() 
-    print( "Server Name   :", return_string_between(str_data,"ServerName;",";"))
-    print( "Instance Name :", return_string_between(str_data,"InstanceName;",";"))
-    print( "Version       :", return_string_between(str_data,"Version;",";"))
-    print( "Port Number   :", return_string_between(str_data,"tcp;",";"))
+    print( "    Server Name   :", return_string_between(str_data,"ServerName;",";"))
+    print( "    Instance Name :", return_string_between(str_data,"InstanceName;",";"))
+    print( "    Version       :", return_string_between(str_data,"Version;",";"))
+    print( "    Port Number   :", return_string_between(str_data,"tcp;",";"))
     print()
     return
 
