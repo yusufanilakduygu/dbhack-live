@@ -22,7 +22,7 @@ print(parse_ping("-s kw1-1.com  -p  125 ; "))
 print(parse_ping("-s kw1-1.com  -p  125 -127; "))
 print(parse_ping("-s 192.200.11.9-10  -p  125 -126; "))
 print(parse_ping("-s 192.200.11.9   -p  125 ; "))
-print(parse_ping("-s 192.200.11.9-10   -p  125 , 126; "))
+print(parse_ping("-s 192.200.11.9, 192.200.11.9 ,ab , 192.200.11.12  -p  125 , 126; "))
 print(parse_ping("-s   a2  -p  125  ; "))
 print(parse_ping("-s 192.200.11.9, 192.200.11.9 ,a3, 192.200.11.12  -p  125 , 126; "))
 print(parse_ping("-s 192.200.11.9, 192.200.11.9 ,a , 192.200.11.12  -p  125 , 126; "))
@@ -381,3 +381,137 @@ def parse_mssql_ping(pcmd):
         
 
     return return_list
+
+
+# parse_user("-s server -p 1632 -sid fdssdg -user SYSTEM,ccc -passwd oracle,vvvv;")
+# parse_user("-s server -p 1632 -sid fdssdg -user_file D:/x/python/username.txt -passwd_file D:/x/python/password.txt ;")
+# parse_user("-s server -p 1632 -sid fdssdg -cred_file d:/x  ;")
+# parse_user("-s server -p 1632 -sid fdssdg -cred_file d:/x -user_file d:/x  ;")
+
+def parse_user(pcmd):
+
+    ipField = Word(nums, max=3)
+
+    full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
+    
+    servername=Combine(Word(alphas)+Optional(Word(alphas+nums+"."+"-")))
+
+    servernames= Or([full_ip , servername])
+    
+    port=Word(nums)
+
+    sid=Word(printables)
+    
+    server_parser="-s"+servernames.setResultsName('server')
+
+    port_parser="-p"+port.setResultsName('port')
+
+    sid_parser= "-sid"+ sid.setResultsName('sid')
+
+    username=Combine(Word(alphas)+Optional(Word(alphas+nums+"-"+"_"+"&"+"#"+"$")))
+
+    usernames="-user"+ (Group( delimitedList(username,",")).setResultsName('username'))
+
+    password=Combine(Word(alphas)+Optional(Word(alphas+nums+"-"+"_"+"&"+"#"+"$"+"?"+"%"+"+"+"!")))
+
+    passwords="-passwd"+ (Group( delimitedList(password,",")).setResultsName('password'))
+
+    user_passwd_list=usernames+passwords
+
+    user_passwd_part=user_passwd_list
+
+    file_path=Combine(Word(printables))
+
+    username_file="-user_file"+file_path.setResultsName('username_file')
+
+    passwd_file="-passwd_file"+file_path.setResultsName('password_file')
+
+    user_passwd_file=username_file+passwd_file
+
+    cred_file="-cred_file"+file_path.setResultsName('cred_file')
+
+    user_passwd_part=Or([user_passwd_list,user_passwd_file,cred_file])
+
+    Oracle_tnsping_parser= (server_parser & port_parser  & sid_parser  & user_passwd_part ) + ";"
+    
+    return_list=list()
+    
+    try:
+        parse_result= Oracle_tnsping_parser.parseString(pcmd)
+    except ParseException:
+        error_module('parse_sid_010','ParseException from dbhack_parser.parse_sid','Your command can not be parsed')
+        return_list=['Error']
+        return return_list
+    
+    server_list=list()
+    server_list.append(parse_result['server'])
+    return_list.append(server_list)
+
+    port_list=list()
+    port_list.append(parse_result['port'])
+    return_list.append(port_list)
+
+    sid_list=list()
+    sid_list.append(parse_result['sid'])
+    return_list.append(sid_list)
+
+# Username ve Password komutda girilmiş ise
+    try:
+        x_list=list(parse_result['username_file'])
+    except  KeyError:
+        username_list=list()
+        for s in parse_result['username']:
+            username_list.append(s)
+        return_list.append(username_list)
+
+        password_list=list()
+        for s in parse_result['password']:
+            password_list.append(s)
+        return_list.append(password_list)
+    
+        return return_list
+    
+# username ve password file ile girilmiş ise
+
+    username_list=[]
+    
+    file_name = parse_result['username_file']
+    
+    try:
+        f=open(file_name)
+    except FileNotFoundError:    
+        error_module('parse_sid_070','SID file open check at dbhack_parser.parse_sid','sid list file does not exist')
+        return_list=['Error']
+        return return_list
+    
+    with open(parse_result['username_file'] ) as f:
+        read_sid=f.read()
+        username_list=read_sid.split()
+    f.closed
+        
+    return_list.append(username_list)
+
+
+    # password file ile girilmiş ise
+
+    password_list=[]
+    
+    file_name = parse_result['password_file']
+    
+    try:
+        f=open(file_name)
+    except FileNotFoundError:    
+        error_module('parse_sid_070','SID file open check at dbhack_parser.parse_sid','sid list file does not exist')
+        return_list=['Error']
+        return return_list
+    
+    with open(parse_result['password_file'] ) as f:
+        read_sid=f.read()
+        password_list=read_sid.split()
+    f.closed
+        
+    return_list.append(password_list)
+
+    return return_list
+    
+    
