@@ -1,0 +1,25 @@
+Take whl file from https://pypi.python.org/pypi/pyodbc/4.0.17
+I downloaded this
+
+pyodbc-4.0.17-cp36-cp36m-win_amd64.whl (md5)
+
+then go to 
+
+c:\python36\Scripts
+
+and run
+
+pip install C:\Users\u003475\Downloads\pyodbc-4.0.17-cp36-cp36m-win32.whl
+
+Processing c:\users\u003475\downloads\pyodbc-4.0.17-cp36-cp36m-win32.whl
+Installing collected packages: pyodbc
+Successfully installed pyodbc-4.0.17
+
+c:\python36\Scripts>python
+Python 3.6.1 (v3.6.1:69c0db5, Mar 21 2017, 17:54:52) [MSC v.1900 32 bit (Intel)]
+ on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import pyodbc
+
+
+
