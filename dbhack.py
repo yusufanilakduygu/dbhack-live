@@ -61,6 +61,25 @@ class REPL(Cmd):
         """
         ora_chk_sid(args)
 
+    def do_ora_brute (self,args):
+
+        """ ora_connect tries to connect ORacle database
+        ora_brute -s servername_list ,-p  port_number_list , -sid sid_name_list -user usernames -password passwords   
+        ora_brute -s 192.200.11.9  -p 1521 -sid DB3 -user SYSTEM -passwd ORACLE
+        ora_brute -s 192.200.11.9  -p 1521 -sid_file D:/x/python/workfile.txt  
+        """
+        ora_connect(args)
+
+
+    def do_ora_brute_file (self,args):
+
+        """ ora_connect tries to connect ORacle database
+        ora_brute_file -s servername_list ,-p  port_number_list , -sid sid_name  -cred_file D:/x/python/cred-file.txt   
+        ora_brute_file -s server -p 1632 -sid fdssdg -cred_file D:/x/python/cred-file.txt
+        ora_brute_file -s 192.200.11.9  -p 1521 -sid DB3 -cred_file D:/x/python/cred-file.txt  
+        """
+        ora_brute_with_file(args)
+        
 
     def do_commands(self,args):
         " Prints used command names , type help commandname for more information "

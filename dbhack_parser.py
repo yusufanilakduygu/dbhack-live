@@ -318,7 +318,7 @@ def parse_mssql_ping(pcmd):
 
     full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
     
-    servername=servername=Combine(Word(alphas)+ Optional(Word(alphas+nums+"."+"-")))
+    servername=servername=Combine(Word(alphas)+ Optional(Word(alphas+nums+"."+"-"+"#")))
 
     servernames= Or([full_ip , servername])
     
@@ -385,8 +385,7 @@ def parse_mssql_ping(pcmd):
 
 # parse_user("-s server -p 1632 -sid fdssdg -user SYSTEM,ccc -passwd oracle,vvvv;")
 # parse_user("-s server -p 1632 -sid fdssdg -user_file D:/x/python/username.txt -passwd_file D:/x/python/password.txt ;")
-# parse_user("-s server -p 1632 -sid fdssdg -cred_file d:/x  ;")
-# parse_user("-s server -p 1632 -sid fdssdg -cred_file d:/x -user_file d:/x  ;")
+
 
 def parse_user(pcmd):
 
@@ -513,5 +512,79 @@ def parse_user(pcmd):
     return_list.append(password_list)
 
     return return_list
+    
+
+# parse_brute_file("-s server -p 1632 -sid fdssdg -cred_file D:/x/python/cred-file.txt ;")
+
+def parse_brute_file(pcmd):
+
+    ipField = Word(nums, max=3)
+
+    full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
+    
+    servername=Combine(Word(alphas)+Optional(Word(alphas+nums+"."+"-")))
+
+    servernames= Or([full_ip , servername])
+    
+    port=Word(nums)
+
+    sid=Word(printables)
+    
+    server_parser="-s"+servernames.setResultsName('server')
+
+    port_parser="-p"+port.setResultsName('port')
+
+    sid_parser= "-sid"+ sid.setResultsName('sid')
+
+    file_path=Combine(Word(printables))
+
+    cred_file="-cred_file"+file_path.setResultsName('cred_file')
+
+    Oracle_tnsping_parser= (server_parser & port_parser  & sid_parser  & cred_file ) + ";"
+    
+    return_list=list()
+    
+    try:
+        parse_result= Oracle_tnsping_parser.parseString(pcmd)
+    except ParseException:
+        error_module('parse_brute_file_010','ParseException from dbhack_parser.brute_file_','Your command can not be parsed')
+        return_list=['Error']
+        return return_list
+    
+    server_list=list()
+    server_list.append(parse_result['server'])
+    return_list.append(server_list)
+
+    port_list=list()
+    port_list.append(parse_result['port'])
+    return_list.append(port_list)
+
+    sid_list=list()
+    sid_list.append(parse_result['sid'])
+    return_list.append(sid_list)
+
+# cred-file okunup liste içine çoklu olarak alınması
+
+    mylist1=[]
+    mylist2=[]
+
+    try:
+        with open(parse_result['cred_file'] ) as f:
+            mylist1 =  [tuple(map(str, i.split(',') ))  for i in f]
+    except Exception as error: 
+             error_module('parse_brute_file_020','Open Credential file from dbhack_parser.brute_file','Can not open credential File')
+             return_list=['Error']
+             return return_list
+
+    try:        
+        for i in range(0,len(mylist1)):
+             mylist2.append( (mylist1[i][0].split()[0], mylist1[i][1].split()[0])   )
+    except Exception as error: 
+             error_module('parse_brute_file_030','Producing tuple list at dbhack_parser.brute_file','Something wrong in Credential File')
+
+    return_list.append(mylist2)
+    
+    return return_list
+    
     
     

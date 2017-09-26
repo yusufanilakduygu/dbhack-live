@@ -2,6 +2,7 @@
 from dbhack_parser import *
 import socket
 import itertools
+import cx_Oracle
 
 
 def tns_ping(p_servername,p_port):
@@ -100,6 +101,26 @@ def ora_chk_sid(args):
             for i in itertools.product( parsed_command[0], parsed_command[1],parsed_command[2]):
                 oracle_sid_test(i[0],i[1],i[2])
     return
+
+def ora_connect (args):
+    parsed_command=parse_user(args+" ;")
+    if parsed_command[0] == 'Error':
+            return
+    else:
+            for i in itertools.product( parsed_command[0], parsed_command[1],parsed_command[2],parsed_command[3],parsed_command[4] ):
+                ora_connect_test(i[0],i[1],i[2],i[3],i[4])
+    return
+
+
+def ora_brute_with_file (args):
+    parsed_command=parse_brute_file(args+" ;")
+    if parsed_command[0] == 'Error':
+            return
+    else:
+            for i in   range(0,len(parsed_command[3])):
+                ora_connect_test(parsed_command[0][0],parsed_command[1][0],parsed_command[2][0] ,parsed_command[3][i][0] , parsed_command[3][i][1] )
+    return
+
 
 def oracle_version(args):
     parsed_command=parse_ping(args+" ;")
@@ -258,4 +279,18 @@ def oracle_sid_test(p_servername,p_port,p_sid):
     print('')
     return
 
-    
+
+def ora_connect_test( p_server,p_port,p_sid,p_user,p_passwd):
+    print(" ")
+    print (' Connection Test: '+p_server+';'+str(p_port)+';'+p_sid+';'+p_user+';'+p_passwd)
+    try:
+        dsn_tns = cx_Oracle.makedsn(p_server , p_port, p_sid)
+        connection = cx_Oracle.Connection(p_user,p_passwd,dsn_tns)
+    except Exception as error:
+        print("")
+        print('  Not Connected to Oracle ' + str(error) )
+        print("")
+        return
+    print(' Connection is Successfull DB version ',connection.version)
+    connection.close
+    return  

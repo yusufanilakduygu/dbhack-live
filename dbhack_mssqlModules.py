@@ -1,7 +1,7 @@
 from dbhack_parser import *
 import socket
 import itertools
- 
+import pyodbc
 
 def return_string_between(p_data,p_begin,p_end):
 	return p_data[p_data.index(p_begin)+len(p_begin) : p_data.find(p_end, p_data.index(p_begin)+len(p_begin)  )]
@@ -12,7 +12,7 @@ def return_string_between(p_data,p_begin,p_end):
 def mssql_ping(p_server):
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.settimeout(13)
+    sock.settimeout(4)
 
     server_address = (p_server, 1434)
     message =  bytearray ([0x03])
@@ -46,3 +46,23 @@ def mssql_chk(args):
             for i in itertools.product( parsed_command[0]):
                 mssql_ping(i[0])
     return
+
+
+def mssql_connect_check(p_server,p_port,p_dbname,p_user,p_passwd):
+
+        connect_string='DRIVER={SQL Server};SERVER='+p_server+','+str(p_port)+';DATABASE='+p_dbname+';UID='+p_user+';PWD='+p_passwd
+        print(" ")
+        print (' Connection Test: '+p_server+';'+str(p_port)+';'+p_dbname+';'+p_user+';'+p_passwd)
+        try:
+                cnxn = pyodbc.connect(connect_string , timeout=1 )
+        except Exception as error:
+                print("")
+                print('  Not Connected to MSSQL Server ' + str(error) )
+                print("")
+                return
+
+        print(' Connection is Successfull  ' )
+        return
+        cnxn.close
+
+        
