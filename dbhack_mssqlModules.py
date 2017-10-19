@@ -74,4 +74,15 @@ def mssql_connect_check(p_server,p_port,p_dbname,p_user,p_passwd):
         return
         cnxn.close
 
+
+def mssql_connect_null_passwd (args):
+    parsed_command=parse_user_for_mssql_null_passwd(args+" ;")
+    if parsed_command[0] == 'Error':
+            return
+    else:
+            for i in itertools.product( parsed_command[0],parsed_command[1],parsed_command[2] ):
+                mssql_connect_check(i[0],i[1],'MASTER',i[2],'')
+
+    return
+
         

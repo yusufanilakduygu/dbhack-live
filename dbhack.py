@@ -36,7 +36,7 @@ class REPL(Cmd):
         print(' --> ora_brute -s servernames  -p ports  -sid sid_names -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
         print(' --> ora_brute_file -s servername  -p port  -sid sid_name  -cred_file username_password_list_file')
         print(' MSSQL Commands ')
-        print(' --> mssql_chk -s servernames -p ports')
+        print(' --> mssql_chk -s servernames ')
         print(' --> mssql_brute -s servernames  -p ports  -db sid_name -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
         
          
@@ -70,6 +70,8 @@ class REPL(Cmd):
         """
         mssql_chk(args)
 
+
+
     def do_ora_sid (self,args):
 
         """ ora_chk_sid chekh sid name on a server
@@ -96,6 +98,15 @@ class REPL(Cmd):
         
         """
         mssql_connect(args)
+
+    def do_mssql_brute_null_passwd (self,args):
+
+        """ ora_connect tries to connect ORacle database
+            mssql_brute_null_passwd -s server_name -p port -user usernames
+   
+        
+        """
+        mssql_connect_null_passwd (args)
 
 
     def do_ora_brute_file (self,args):

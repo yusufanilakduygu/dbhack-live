@@ -710,4 +710,60 @@ def parse_user_for_mssql(pcmd):
         
     return_list.append(password_list)
 
+    return return_list
+
+
+# parse_user_for_mssql_null_passwd("-s server -p 1632 -user sa,master ;")
+# parse_user_for_mssql_null_passwd("-s server -p 1632 -user sa ;")
+
+def parse_user_for_mssql_null_passwd (pcmd):
+
+    ipField = Word(nums, max=3)
+
+    full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
+    
+    servername=Combine(Word(alphas)+Optional(Word(alphas+nums+"."+"-")))
+
+    servernames= Or([full_ip , servername])
+    
+    port=Word(nums)
+
+    sid=Word(printables)
+    
+    server_parser="-s"+servernames.setResultsName('server')
+
+    port_parser="-p"+port.setResultsName('port')
+
+
+    username=Combine(Word(alphas)+Optional(Word(alphas+nums+"-"+"_"+"&"+"#"+"$")))
+
+    usernames="-user"+ (Group( delimitedList(username,",")).setResultsName('username'))
+
+
+    Oracle_tnsping_parser= (server_parser & port_parser  &  usernames ) + ";"
+    
+    return_list=list()
+    
+    try:
+        parse_result= Oracle_tnsping_parser.parseString(pcmd)
+    except ParseException:
+        error_module('parse_user_for_mssql_010','ParseException from dbhack_parser.parse_user_for_mssql','Your command can not be parsed')
+        return_list=['Error']
+        return return_list
+    
+    server_list=list()
+    server_list.append(parse_result['server'])
+    return_list.append(server_list)
+
+    port_list=list()
+    port_list.append(parse_result['port'])
+    return_list.append(port_list)
+
+
+    username_list=list()
+    for s in parse_result['username']:
+        username_list.append(s)
+    return_list.append(username_list)
+
     return return_list   
+
