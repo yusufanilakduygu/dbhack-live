@@ -25,6 +25,7 @@ def mssql_ping(p_server):
         print("")
         print('  Not Connected to SQL Server ' + str(error) )
         print("")
+        sock.close()
         return
      
 
@@ -85,4 +86,12 @@ def mssql_connect_null_passwd (args):
 
     return
 
+def mssql_brute_with_file (args):
+    parsed_command=parse_brute_file_mssql(args+" ;")
+    if parsed_command[0] == 'Error':
+            return
+    else:
+            for i in   range(0,len(parsed_command[3])):
+                mssql_connect_check(parsed_command[0][0],parsed_command[1][0],parsed_command[2][0] ,parsed_command[3][i][0] , parsed_command[3][i][1] )
+    return
         

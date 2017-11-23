@@ -1,10 +1,5 @@
 """
-
-ora_chk -s 192.200.11.9  -p 1521
-ora_chk -s 192.200.11.9 , 192.200.11.10  -p 1605
-ora_chk -s 192.200.11.9 , 192.200.11.10 , a1.com  -p 1605
-ora_chk -s  192.200.11.9-10  -p  1521
-
+This is the starting code for DBHack
 
 """
 from dbhack_parser import *
@@ -29,30 +24,42 @@ class REPL(Cmd):
         Cmd.__init__(self)
 
     def do_commands(self,args):
-        " Prints used command names , type help commandname for more information "
+        " Below you can see developed command names , type help command_name for more information "
         print(' ORACLE Commands ')
-        print(' --> ora_chk -s servernames -p ports')
-        print(' --> ora_sid -s servernames -p ports -sid sid_names | -sid_file sid_filename')
+        print(' --> ora_chk ')
+        print(' --> ora_sid  ')
         print(' --> ora_brute -s servernames  -p ports  -sid sid_names -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
         print(' --> ora_brute_file -s servername  -p port  -sid sid_name  -cred_file username_password_list_file')
         print(' MSSQL Commands ')
         print(' --> mssql_chk -s servernames ')
         print(' --> mssql_brute -s servernames  -p ports  -db sid_name -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
         
-         
-        
 
     def do_ora_chk (self,args):
 
-        # ora_chk -s 192.200.11.9  -p 1521
-        # ora_chk -s 192.200.11.9 , 192.200.11.10  -p 1605
-        # ora_chk -s 192.200.11.9 , 192.200.11.10 , a1.com  -p 1605
-        # ora_chk -s  192.200.11.9-10  -p  1521
-        # ora_chk -s  atlas.sys.yapikredi.com.tr  -p  1500
-        
-        """ ora_chk ping a server to check Oracle database 
-            ora_chk -s  servename1,servername2 -p  1454,1455  
-            ora_chk -s  192.200.11.9-11   -p  1521-1522
+        """
+
+        Command Name : ora_chk
+​
+        Explanation
+        ----------
+        ora_chk pings a server with ports to check Oracle databases
+        This command pings a server or servers or a network range
+        Port can be a single port or ports or a port range
+        Syntax
+        ----------
+        ora_chk -s  <servename1,servername2,...>  -p  <port01,port02 ...>
+        ora_chk -s  < xxx.xxx.xxxx.xx-xxx> -p < port01-port02>
+        Samples
+        ---------
+        ora_chk -s 192.168.0.27 -p 1521
+        ora_chk -s 192.168.0.27 -p 1521-1522
+        ora_chk -s 192.168.0.27-28  -p 1521,1522
+        ora_chk -s 192.168.0.27, 192.168.15.28  -p 1521,1522
+        ora_chk -s 192.168.0.27-30  -p 1521,1522
+        ora_chk -s servername01  -p 1521,1522
+        ora_chk -s servername01,servername01  -p 1521,1522
+
         """
         ora_chk(args)
 
@@ -74,10 +81,28 @@ class REPL(Cmd):
 
     def do_ora_sid (self,args):
 
-        """ ora_chk_sid chekh sid name on a server
-        ora_sid -s servername_list ,-p  port_number_list , -sid sid_name_list | -sid_file file_name  
-        ora_sid -s 192.200.11.9  -p 1521 -sid DB3
-        ora_sid -s 192.200.11.9  -p 1521 -sid_file D:/x/python/workfile.txt  
+        """
+
+        Command Name : ora_sid
+​
+        Explanation
+        -----------
+        ora_sid tries to guess Oracle SID and SERVICE_NAME
+        command first tries given names as a SID  , and then tries the same name  as  a SERVICE_NAME
+        You can scan servers and ports as ora_chk command
+        SID or SERVICE_NAME names can be given in the command or they can be given in the file
+		sid-list.txt file is added as a sample 
+		this file is an updated version of http://www.red-database-security.com/scripts/sid.txt
+
+        Syntax
+        ----------
+        ora_sid -s  <servename1,servername2,...>  -p  <port01,port02 ...> -sid <sid_name_list> | -sid_file <file_name>
+        ora_sid -s  < xxx.xxx.xxxx.xx-xxx> -p < port01-port02> -sid <sid_name_list> | -sid_file <file_name>
+
+        Samples
+        ---------
+        ora_sid -s 192.168.0.27  -p 1521,1522  -sid DB3,DB4
+        ora_sid -s 192.168.0.27  -p 1521,1522  -sid_file sid-list.txt 
         """
         ora_chk_sid(args)
 
@@ -107,7 +132,15 @@ class REPL(Cmd):
         
         """
         mssql_connect_null_passwd (args)
+        
+    def do_mssql_brute_file(self,args):
 
+        """ ora_connect tries to connect ORacle database
+        ora_brute -s servername_list ,-p  port_number_list , -db sid_name_list -user usernames -password passwords   
+        ora_brute -s 192.200.11.9  -p 1521 -db DB3 -user SYSTEM -passwd ORACLE
+        
+        """
+        mssql_brute_with_file(args)
 
     def do_ora_brute_file (self,args):
 
@@ -128,12 +161,15 @@ class REPL(Cmd):
 
 if __name__ == '__main__':
     print(' ')
-    print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu Sile/Istanbul")
+    print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu in Sile/Istanbul")
+	print("type help to see all commands 
+	print("type help <command_name> to see details about a command")
+
     print(' You can use below commands')
     print(' --> Current Commands')
     print(' --> ****************')
     print(' --> ora_chk')
-    print(' --> ora_chk_sid')
+    print(' --> ora_sid')
     print(' ')
     print(' Type help CommandName to get much more information')
     print(' ')

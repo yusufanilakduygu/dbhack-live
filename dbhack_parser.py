@@ -4,8 +4,8 @@ from dbhack_error_module import error_module
 """
 25.07.2017
 This function parses ping commands
-It has two parts : One part is the server parameters with -server option
-other part is the port part with -port option
+It has two parts : One part is the server parameters with -s option
+other part is the port part with -p option
 Server part can contain  ; server names , ip names with comma ;  -server 192.178.10.4, db.local.org
 or this part can contains a network segment like : 192.168.10.1-45
 There is no more selection for this option
@@ -142,8 +142,8 @@ def parse_ping(pcmd):
           
     return return_list
 
-# print(parse_sid("-s 192.200.11.9-10  -p  125  -sid ORCL,KBLIVE,DB3; "))
-# print(parse_sid("-s 192.200.11.9-10  -p  1521  -sid DB3; "))
+# print(parse_sid("-s 192.200.11.9-10  -p  125,126 -sid ORCL,KBLIVE,DB3 ; "))
+# print(parse_sid("-s 192.200.11.9-10  -p  1521  -sid DB3 ; "))
 # print(parse_sid("-s 192.200.11.9-10  -p  125,126,127  -sid_file  D:/x/python/workfile.txt ;"))
 
 
@@ -161,7 +161,7 @@ def parse_sid(pcmd):
     
     port=Word(nums)
 
-    sid=Word(printables)
+    sid=Combine(Word(alphas)+Optional(Word(alphas+nums+"-"+"_"+"&"+"#"+"$")))
     
 
     iprange     =  ipField + "." + ipField + "." + ipField + "." + ipField + "-" + ipField
@@ -171,9 +171,9 @@ def parse_sid(pcmd):
 
     port_parser="-p"+  Group(Or([ portrange ,delimitedList(port,",") ])).setResultsName('port')
 
-    # sid_file kısmını ekle 
+    # sid_file kısmını ekle BURADA HATA VAR.
 
-    sid_name_parser= "-sid"+ Group( delimitedList(sid,",")).setResultsName('sid')
+    sid_name_parser= "-sid"+ (Group(delimitedList(sid,",")).setResultsName('sid'))
 
     file_path=Combine(Word(printables))
 
@@ -767,3 +767,77 @@ def parse_user_for_mssql_null_passwd (pcmd):
 
     return return_list   
 
+# parse_brute_file_mssql("-s server -p 1632 -db fdssdg -cred_file mssql-cred-file.txt ;")
+
+
+def parse_brute_file_mssql(pcmd):
+
+    ipField = Word(nums, max=3)
+
+    full_ip     =  Combine(ipField + "." + ipField + "." + ipField + "." + ipField )
+    
+    servername=Combine(Word(alphas)+Optional(Word(alphas+nums+"."+"-")))
+
+    servernames= Or([full_ip , servername])
+    
+    port=Word(nums)
+
+    sid=Word(printables)
+    
+    server_parser="-s"+servernames.setResultsName('server')
+
+    port_parser="-p"+port.setResultsName('port')
+
+    sid_parser= "-db"+ sid.setResultsName('sid')
+
+    file_path=Combine(Word(printables))
+
+    cred_file="-cred_file"+file_path.setResultsName('cred_file')
+
+    Oracle_tnsping_parser= (server_parser & port_parser  & sid_parser  & cred_file ) + ";"
+    
+    return_list=list()
+    
+    try:
+        parse_result= Oracle_tnsping_parser.parseString(pcmd)
+    except ParseException:
+        error_module('parse_brute_file_mssql_010','ParseException from dbhack_parser.brute_file_mssql','Your command can not be parsed')
+        return_list=['Error']
+        return return_list
+    
+    server_list=list()
+    server_list.append(parse_result['server'])
+    return_list.append(server_list)
+
+    port_list=list()
+    port_list.append(parse_result['port'])
+    return_list.append(port_list)
+
+    sid_list=list()
+    sid_list.append(parse_result['sid'])
+    return_list.append(sid_list)
+
+# cred-file okunup liste içine çoklu olarak alınması
+
+    mylist1=[]
+    mylist2=[]
+
+    try:
+        with open(parse_result['cred_file'] ) as f:
+            mylist1 =  [tuple(map(str, i.split(',') ))  for i in f]
+    except Exception as error: 
+             error_module('parse_brute_file_020','Open Credential file from dbhack_parser.parse_brute_file_mssql','Can not open credential File')
+             return_list=['Error']
+             return return_list
+
+    try:        
+        for i in range(0,len(mylist1)):
+             mylist2.append( (mylist1[i][0].split()[0], mylist1[i][1].split()[0])   )
+    except Exception as error: 
+             error_module('parse_brute_file_030','Producing tuple list at dbhack_parser.parse_brute_file_mssql','Something wrong in Credential File')
+
+    return_list.append(mylist2)
+    
+    return return_list
+    
+    

