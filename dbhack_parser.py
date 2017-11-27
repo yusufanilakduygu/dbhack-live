@@ -171,7 +171,7 @@ def parse_sid(pcmd):
 
     port_parser="-p"+  Group(Or([ portrange ,delimitedList(port,",") ])).setResultsName('port')
 
-    # sid_file kısmını ekle BURADA HATA VAR.
+    # sid_file 
 
     sid_name_parser= "-sid"+ (Group(delimitedList(sid,",")).setResultsName('sid'))
 
@@ -427,9 +427,7 @@ def parse_user(pcmd):
 
     user_passwd_file=username_file+passwd_file
 
-    cred_file="-cred_file"+file_path.setResultsName('cred_file')
-
-    user_passwd_part=Or([user_passwd_list,user_passwd_file,cred_file])
+    user_passwd_part=Or([user_passwd_list,user_passwd_file])
 
     Oracle_tnsping_parser= (server_parser & port_parser  & sid_parser  & user_passwd_part ) + ";"
     
@@ -438,7 +436,7 @@ def parse_user(pcmd):
     try:
         parse_result= Oracle_tnsping_parser.parseString(pcmd)
     except ParseException:
-        error_module('parse_sid_010','ParseException from dbhack_parser.parse_sid','Your command can not be parsed')
+        error_module('parse_sid_010','ParseException from dbhack_parser.parse_user','Your command can not be parsed')
         return_list=['Error']
         return return_list
     
@@ -479,7 +477,7 @@ def parse_user(pcmd):
     try:
         f=open(file_name)
     except FileNotFoundError:    
-        error_module('parse_sid_070','SID file open check at dbhack_parser.parse_sid','sid list file does not exist')
+        error_module('parse_sid_070','username file open check at dbhack_parser.parse_user','username file does not exist')
         return_list=['Error']
         return return_list
     
@@ -500,7 +498,7 @@ def parse_user(pcmd):
     try:
         f=open(file_name)
     except FileNotFoundError:    
-        error_module('parse_sid_070','SID file open check at dbhack_parser.parse_sid','sid list file does not exist')
+        error_module('parse_sid_070','password file open check at dbhack_parser.parse_user','password file does not exist')
         return_list=['Error']
         return return_list
     
@@ -547,7 +545,7 @@ def parse_brute_file(pcmd):
     try:
         parse_result= Oracle_tnsping_parser.parseString(pcmd)
     except ParseException:
-        error_module('parse_brute_file_010','ParseException from dbhack_parser.brute_file_','Your command can not be parsed')
+        error_module('parse_brute_file_010','ParseException from dbhack_parser.parse_brute_file','Your command can not be parsed')
         return_list=['Error']
         return return_list
     

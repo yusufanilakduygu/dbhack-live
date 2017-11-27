@@ -23,7 +23,7 @@ def mssql_ping(p_server):
         data, server = sock.recvfrom(4096)
     except Exception as error:
         print("")
-        print('  Not Connected to SQL Server ' + str(error) )
+        print('  Server or SQL Server Browser did not respond your request ' + str(error) )
         print("")
         sock.close()
         return
@@ -31,11 +31,16 @@ def mssql_ping(p_server):
 
     str_data=str(data)
     print() 
+    print( "    SQL Server Browser responded your request ")
+    print()
     print( "    Server Name   :", return_string_between(str_data,"ServerName;",";"))
     print( "    Instance Name :", return_string_between(str_data,"InstanceName;",";"))
     print( "    Version       :", return_string_between(str_data,"Version;",";"))
     print( "    Port Number   :", return_string_between(str_data,"tcp;",";"))
-    print()
+    print( "    Full Returned Data ")
+    print() 
+    print( "    "+str_data)
+    print() 
     return
 
 

@@ -28,10 +28,10 @@ class REPL(Cmd):
         print(' ORACLE Commands ')
         print(' --> ora_chk ')
         print(' --> ora_sid  ')
-        print(' --> ora_brute -s servernames  -p ports  -sid sid_names -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
-        print(' --> ora_brute_file -s servername  -p port  -sid sid_name  -cred_file username_password_list_file')
+        print(' --> ora_brute ')
+        print(' --> ora_brute_file  ')
         print(' MSSQL Commands ')
-        print(' --> mssql_chk -s servernames ')
+        print(' --> mssql_chk -  ')
         print(' --> mssql_brute -s servernames  -p ports  -db sid_name -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
         
 
@@ -63,17 +63,30 @@ class REPL(Cmd):
         """
         ora_chk(args)
 
-    def do_mssql_chk (self,args):
+    def do_mssql_chk_browser (self,args):
+       
+        """ 
 
-        # ora_chk -s 192.200.11.9  -p 1521
-        # ora_chk -s 192.200.11.9 , 192.200.11.10  -p 1605
-        # ora_chk -s 192.200.11.9 , 192.200.11.10 , a1.com  -p 1605
-        # ora_chk -s  192.200.11.9-10  -p  1521
-        # ora_chk -s  atlas.sys.yapikredi.com.tr  -p  1500
-        
-        """ mssql_chk ping a server to check MS SQL
-            mssql_chk -s  servename1,servername2    
-            ora_chk -s  192.200.11.9-11   
+        Command Name : mssql_chk_browser
+​
+        Explanation
+        ----------
+        mssql_chk_browser pings SQL Server Browser in any server.
+	This command is used to know if the SQL server is running on a server.
+	If SQL Server does nor respond to your request. It does not mean that
+	SQL server is not running on this server. 
+
+        Syntax
+        ----------
+        mssql_chk_browser  <server1,server2> 
+        mssql_chk_browser -s  < xxx.xxx.xxxx.xx-xxx>  
+
+        Samples
+        ---------
+        mssql_chk_browser -s 192.168.1.37  
+        mssql_chk_browser -s 192.168.1.37-40
+	mssql_chk_browser -s 192.168.1.37, 192.168.1.42
+   
         """
         mssql_chk(args)
 
@@ -88,11 +101,12 @@ class REPL(Cmd):
         Explanation
         -----------
         ora_sid tries to guess Oracle SID and SERVICE_NAME
-        command first tries given names as a SID  , and then tries the same name  as  a SERVICE_NAME
+        command first tries given names as a SID to guess SID 
+	and then tries the same name  as  a SERVICE_NAME to guess service name
         You can scan servers and ports as ora_chk command
         SID or SERVICE_NAME names can be given in the command or they can be given in the file
-		sid-list.txt file is added as a sample 
-		this file is an updated version of http://www.red-database-security.com/scripts/sid.txt
+	sid-list.txt file is added as a sample 
+	this file is an updated version of http://www.red-database-security.com/scripts/sid.txt
 
         Syntax
         ----------
@@ -108,9 +122,25 @@ class REPL(Cmd):
 
     def do_ora_brute (self,args):
 
-        """ ora_connect tries to connect ORacle database
-        ora_brute -s servername_list ,-p  port_number_list , -sid sid_name_list -user usernames -password passwords   
-        ora_brute -s 192.200.11.9  -p 1521 -sid DB3 -user SYSTEM -passwd ORACLE
+        """ 
+        Command Name : ora_brute
+​
+        Explanation
+        -----------
+	ora_brute tries to connect Oracle database 
+        with given usernames and passwords,
+	Username and password pairs can be given in the command
+	At the same time you can use username list file and password list file 
+
+        Syntax
+        ----------
+        ora_brute -s <servername> ,-p  <port_number> , -sid <sid_name> -user <username_list> -passd <password_list>   
+	ora_brute -s <servername> ,-p  <port_number> , -sid <sid_namet> -user_file <usernames-list-file > -passd_file <passwords-list-file>   
+
+        Samples
+        ---------
+        ora_brute -s 192.168.1.34 -p 1521 -sid DB3 -user system,scott  -passwd oracle,tiger
+	ora_brute -s 192.168.1.34 -p 1521 -sid DB3 -user_file username-list.txt -passwd_file passwd-list.txt
           
         """
         ora_connect(args)
@@ -144,10 +174,24 @@ class REPL(Cmd):
 
     def do_ora_brute_file (self,args):
 
-        """ ora_connect tries to connect ORacle database
-        ora_brute_file -s servername_list ,-p  port_number_list , -sid sid_name  -cred_file D:/x/python/cred-file.txt   
-        ora_brute_file -s server -p 1632 -sid fdssdg -cred_file D:/x/python/cred-file.txt
-        ora_brute_file -s 192.200.11.9  -p 1521 -sid DB3 -cred_file D:/x/python/cred-file.txt  
+        """ 
+        Command Name : ora_brute_file
+​
+        Explanation
+        -----------
+	ora_brute tries to connect Oracle database 
+        with given ucredential file
+	This file contains; Username, Password pairs.
+
+        Syntax
+        ----------
+        ora_brute_file -s <servername> ,-p  <port_number> , -sid <sid_name> -cred_file  <usercredential_file>   
+	  
+
+        Samples
+        ---------
+        ora_brute_file  -s 192.168.1.34 -p 1521 -sid DB3 -cred_file oracle-cred-file.txt
+
         """
         ora_brute_with_file(args)
         
@@ -162,14 +206,13 @@ class REPL(Cmd):
 if __name__ == '__main__':
     print(' ')
     print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu in Sile/Istanbul")
-	print("type help to see all commands 
-	print("type help <command_name> to see details about a command")
-
+    print(" ")
     print(' You can use below commands')
     print(' --> Current Commands')
     print(' --> ****************')
     print(' --> ora_chk')
     print(' --> ora_sid')
+    print(' --> ora_brute')
     print(' ')
     print(' Type help CommandName to get much more information')
     print(' ')
