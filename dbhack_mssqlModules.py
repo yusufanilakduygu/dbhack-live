@@ -53,7 +53,6 @@ def mssql_chk(args):
                 mssql_ping(i[0])
     return
 
-
 def mssql_connect (args):
     parsed_command=parse_user_for_mssql(args+" ;")
     if parsed_command[0] == 'Error':
@@ -61,6 +60,15 @@ def mssql_connect (args):
     else:
             for i in itertools.product( parsed_command[0], parsed_command[1],parsed_command[2],parsed_command[3],parsed_command[4] ):
                 mssql_connect_check(i[0],i[1],i[2],i[3],i[4])
+    return
+
+def mssql_chk_odbc (args):
+    parsed_command=parse_mssql_check_odbc(args+" ;")
+    if parsed_command[0] == 'Error':
+            return
+    else:
+            for i in itertools.product( parsed_command[0], parsed_command[1]):
+                mssql_connect_check(i[0],i[1],'MASTER','fakexyz123','fakexyz123')
     return
 
 def mssql_connect_check(p_server,p_port,p_dbname,p_user,p_passwd):

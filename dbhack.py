@@ -90,7 +90,32 @@ class REPL(Cmd):
         """
         mssql_chk(args)
 
+    def do_mssql_chk_odbc (self,args):
+       
+        """ 
 
+        Command Name : mssql_chk_odbc
+​
+        Explanation
+        ----------
+        mssql_chk_browser pings SQL Server Browser in any server.
+	This command is used to know if the SQL server is running on a server.
+	If SQL Server does nor respond to your request. It does not mean that
+	SQL server is not running on this server. 
+
+        Syntax
+        ----------
+        mssql_chk_browser  <server1,server2> 
+        mssql_chk_browser -s  < xxx.xxx.xxxx.xx-xxx>  
+
+        Samples
+        ---------
+        mssql_chk_browser -s 192.168.1.37  
+        mssql_chk_browser -s 192.168.1.37-40
+	mssql_chk_browser -s 192.168.1.37, 192.168.1.42
+   
+        """
+        mssql_chk_odbc(args)
 
     def do_ora_sid (self,args):
 
