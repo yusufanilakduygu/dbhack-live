@@ -68,27 +68,7 @@ def mssql_chk_odbc (args):
             return
     else:
             for i in itertools.product( parsed_command[0], parsed_command[1]):
-                # mssql_connect_check(i[0],i[1],'MASTER','fakexyz123','fakexyz123')
-                print('')
-                print (' Connection : '+i[0]+' : '+str(i[1])+'...')
-                connect_string='DRIVER={SQL Server};SERVER='+i[0]+','+str(i[1])+';DATABASE=MASTER;UID=fakexyz123;PWD=fakexyz123'
-                try:
-                      cnxn = pyodbc.connect(connect_string , timeout=1 )
-                except Exception as error:
-                       # print(str(error), ' find -->  ',str(error).find('Login failed for user'))
-                        if str(error).find('Login failed for user') > 0:
-                                print("")
-                                print (' Connection test is succesfull , There is an SQL Server database in this server and port ')
-                                print("")
-                                return
-                        else:                                  
-                                print("")
-                                print (' Connection test is NOT succesfull , There is NOT any SQL Server database in this server and port ')
-                                print("")
-                                return
-                print(' GOTCHA Connection is Successfull there is an user with name fakexyz123 and the same password ' )
-                return
-                cnxn.close        
+                mssql_connect_check(i[0],i[1],'MASTER','fakexyz123','fakexyz123')
     return
 
 def mssql_connect_check(p_server,p_port,p_dbname,p_user,p_passwd):

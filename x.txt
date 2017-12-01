@@ -1,9 +1,2 @@
-/*  ora_connect  -s 10.59.10.77 -p 1453 -sid TFTDEV -user TEST -passwd oracle */
-/* ora_connect  -s 10.59.10.77 -p 1453 -sid TFTDEV -user TEST  -passwd oracle123,xxx,ttt,yyy,zzz,ggg,hhh,jjj,hhh,fff,ggg,ff,ff,gg,rr */
-/*  ora_brute_file -s kemer.sys.yapikredi.com.tr  -p 1521  -cred_file oracle-cred-file.txt -sid CONFLIVE */
-
-
-
-/* ora_sid -s pegasus.sys.yapikredi.com.tr -p 1802 -sid DPSTLIVE */
-
-mssql_brute -s 10.60.101.113 -p 1433 -db MASTER -user entuser  -passwd Adem#123 
+mssql_chk_odbc -s CAKLUSVD -p 1433
+mssql_chk_odbc -s CAKLUSVD -p 1456

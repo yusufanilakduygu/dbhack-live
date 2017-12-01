@@ -31,7 +31,8 @@ class REPL(Cmd):
         print(' --> ora_brute ')
         print(' --> ora_brute_file  ')
         print(' MSSQL Commands ')
-        print(' --> mssql_chk -  ')
+        print(' --> mssql_chk_browser   ')
+        print(' --> mssql_chk_odbc   ')
         print(' --> mssql_brute -s servernames  -p ports  -db sid_name -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
         
 
@@ -98,21 +99,23 @@ class REPL(Cmd):
 ​
         Explanation
         ----------
-        mssql_chk_browser pings SQL Server Browser in any server.
+        mssql_chk_odbc pings SQL Server Browser in any server.
 	This command is used to know if the SQL server is running on a server.
 	If SQL Server does nor respond to your request. It does not mean that
-	SQL server is not running on this server. 
+	SQL server is not running on this server.
+	PAY ATTENTION, This command uses ODBC connect Therefore you can be detected by database audit
+	 
 
         Syntax
         ----------
-        mssql_chk_browser  <server1,server2> 
-        mssql_chk_browser -s  < xxx.xxx.xxxx.xx-xxx>  
+        mssql_chk_odbc  -s  <servename1,servername2,...>  -p  <port01,port02 ...> 
+        mssql_chk_odbc  -s < xxx.xxx.xxxx.xx-xxx> -p < port01-port02>
 
         Samples
         ---------
-        mssql_chk_browser -s 192.168.1.37  
-        mssql_chk_browser -s 192.168.1.37-40
-	mssql_chk_browser -s 192.168.1.37, 192.168.1.42
+        mssql_chk_odbc -s 192.168.1.37  -p 1433,1434
+        mssql_chk_odbc -s 192.168.1.37-40 -p 1433
+	mssql_chk_odbc -s 192.168.1.37, 192.168.1.42 -p 1433
    
         """
         mssql_chk_odbc(args)
@@ -165,7 +168,7 @@ class REPL(Cmd):
         Samples
         ---------
         ora_brute -s 192.168.1.34 -p 1521 -sid DB3 -user system,scott  -passwd oracle,tiger
-	ora_brute -s 192.168.1.34 -p 1521 -sid DB3 -user_file username-list.txt -passwd_file passwd-list.txt
+        ora_brute -s 192.168.1.34 -p 1521 -sid DB3 -user_file username-list.txt -passwd_file passwd-list.txt
           
         """
         ora_connect(args)
@@ -233,13 +236,19 @@ if __name__ == '__main__':
     print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu in Sile/Istanbul")
     print(" ")
     print(' You can use below commands')
-    print(' --> Current Commands')
-    print(' --> ****************')
-    print(' --> ora_chk')
-    print(' --> ora_sid')
-    print(' --> ora_brute')
-    print(' ')
-    print(' Type help CommandName to get much more information')
-    print(' ')
+    print(" ")
+    print(' ORACLE Commands ')
+    print(" ")
+    print(' --> ora_chk ')
+    print(' --> ora_sid  ')
+    print(' --> ora_brute ')
+    print(' --> ora_brute_file  ')
+    print(" ")
+    print(' MSSQL Commands ')
+    print(" ")
+    print(' --> mssql_chk_browser   ')
+    print(' --> mssql_chk_odbc   ')
+    print(' --> mssql_brute -s servernames  -p ports  -db sid_name -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
+    print(" ")
     app = REPL()
     app.cmdloop()
