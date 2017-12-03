@@ -831,8 +831,11 @@ def parse_brute_file_mssql(pcmd):
     try:        
         for i in range(0,len(mylist1)):
              mylist2.append( (mylist1[i][0].split()[0], mylist1[i][1].split()[0])   )
+             
     except Exception as error: 
-             error_module('parse_brute_file_030','Producing tuple list at dbhack_parser.parse_brute_file_mssql','Something wrong in Credential File')
+            error_module('parse_brute_file_030','Producing tuple list at dbhack_parser.parse_brute_file_mssql','Something wrong in Credential File')
+            
+        
 
     return_list.append(mylist2)
     

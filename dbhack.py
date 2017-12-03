@@ -33,7 +33,8 @@ class REPL(Cmd):
         print(' MSSQL Commands ')
         print(' --> mssql_chk_browser   ')
         print(' --> mssql_chk_odbc   ')
-        print(' --> mssql_brute -s servernames  -p ports  -db sid_name -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
+        print(' --> mssql_brute ')
+        print(' --> mssql_brute_file')
         
 
     def do_ora_chk (self,args):
@@ -99,11 +100,12 @@ class REPL(Cmd):
 ​
         Explanation
         ----------
-        mssql_chk_odbc pings SQL Server Browser in any server.
-	This command is used to know if the SQL server is running on a server.
-	If SQL Server does nor respond to your request. It does not mean that
-	SQL server is not running on this server.
-	PAY ATTENTION, This command uses ODBC connect Therefore you can be detected by database audit
+        mssql_chk_odbc uses ODBC calls to check SQL Server.
+        Simply, it tries to connect SQL server with a fake username and password.
+        And then It controls returned message to decide
+        if the SQL server is running on a server.
+	PAY ATTENTION, This command uses ODBC connect
+	Therefore you can be detected by database audit
 	 
 
         Syntax
@@ -175,10 +177,29 @@ class REPL(Cmd):
         
     def do_mssql_brute (self,args):
 
-        """ ora_connect tries to connect ORacle database
-        ora_brute -s servername_list ,-p  port_number_list , -db sid_name_list -user usernames -password passwords   
-        ora_brute -s 192.200.11.9  -p 1521 -db DB3 -user SYSTEM -passwd ORACLE
-        
+        """
+        Command Name : mssql_brute
+​
+        Explanation
+        -----------
+	mssql_brute tries to connect MS SQL Server database 
+        with given usernames and passwords,
+	Username and password pairs can be given in the command
+	At the same time you can use username list file and password list file
+	PAY ATTENTION, This command uses ODBC connect
+	Therefore you can be detected by database audit
+
+        Syntax
+        ----------
+        mssql_brute -s <servername> ,-p  <port_number> , -db <db_name> -user <username_list> -passd <password_list>   
+	mssql_brute -s <servername> ,-p  <port_number> , -db <db_name> -user_file <username_file > -passd_file <passwd_file>   
+
+        Samples
+        ---------
+        mssql_brute -s 192.168.0.27 -p  1433 -db MASTER -user sa -passwd sa123 
+        mssql_brute -s 192.168.0.27 -p  1433 -db MASTER -user sa -passwd sa,sa123,sa1
+        mssql_brute -s 192.168.0.27 -p  1433 -db MASTER -user_file mssql_username-list.txt -passwd_file mssql_password-list.txt
+
         """
         mssql_connect(args)
 
@@ -193,9 +214,24 @@ class REPL(Cmd):
         
     def do_mssql_brute_file(self,args):
 
-        """ ora_connect tries to connect ORacle database
-        ora_brute -s servername_list ,-p  port_number_list , -db sid_name_list -user usernames -password passwords   
-        ora_brute -s 192.200.11.9  -p 1521 -db DB3 -user SYSTEM -passwd ORACLE
+        """
+
+        Command Name : mssql_brute_file
+​
+        Explanation
+        -----------
+	mssql_brute tries to connect Oracle database 
+        with given credential file
+	This file contains; Username, Password pairs.
+
+        Syntax
+        ----------
+        mssql_brute_file -s <servername> ,-p  <port_number> , -db <db_name> -cred_file  <mssql_credential_file>   
+	  
+
+        Samples
+        ---------
+        mssql_brute_file  -s 192.168.0.28 -p 1433 -db MASTER -cred_file mssql-cred-file.txt
         
         """
         mssql_brute_with_file(args)
@@ -248,7 +284,8 @@ if __name__ == '__main__':
     print(" ")
     print(' --> mssql_chk_browser   ')
     print(' --> mssql_chk_odbc   ')
-    print(' --> mssql_brute -s servernames  -p ports  -db sid_name -user usernames | - user_file username_list_file -passwd passwords | -passwd_file password_list_file')
+    print(' --> mssql_brute ')
+    print(' --> mssql_brute_file ')
     print(" ")
     app = REPL()
     app.cmdloop()
