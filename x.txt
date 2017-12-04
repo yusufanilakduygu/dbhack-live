@@ -1,2 +1,2 @@
-mssql_chk_odbc -s CAKLUSVD -p 1433
-mssql_chk_odbc -s CAKLUSVD -p 1456
+mssql_chk_odbc -s OPCCNSQL -p 1433-1445   
+ 

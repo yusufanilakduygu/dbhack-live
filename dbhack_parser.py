@@ -745,7 +745,7 @@ def parse_user_for_mssql_null_passwd (pcmd):
     try:
         parse_result= Oracle_tnsping_parser.parseString(pcmd)
     except ParseException:
-        error_module('parse_user_for_mssql_010','ParseException from dbhack_parser.parse_user_for_mssql','Your command can not be parsed')
+        error_module('parse_user_for_mssql_010','ParseException from dbhack_parser.parse_user_for_mssql_null_passwd','Your command can not be parsed')
         return_list=['Error']
         return return_list
     

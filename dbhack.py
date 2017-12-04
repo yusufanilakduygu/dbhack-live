@@ -8,6 +8,7 @@ from dbhack_OracleModules import *
 from cmd2 import Cmd
 from dbhack_mssqlModules import *
 import pyparsing
+from dbhack_error_module import *
 
 class REPL(Cmd):
 
@@ -25,16 +26,7 @@ class REPL(Cmd):
 
     def do_commands(self,args):
         " Below you can see developed command names , type help command_name for more information "
-        print(' ORACLE Commands ')
-        print(' --> ora_chk ')
-        print(' --> ora_sid  ')
-        print(' --> ora_brute ')
-        print(' --> ora_brute_file  ')
-        print(' MSSQL Commands ')
-        print(' --> mssql_chk_browser   ')
-        print(' --> mssql_chk_odbc   ')
-        print(' --> mssql_brute ')
-        print(' --> mssql_brute_file')
+        commands(args)
         
 
     def do_ora_chk (self,args):
@@ -160,7 +152,9 @@ class REPL(Cmd):
 	ora_brute tries to connect Oracle database 
         with given usernames and passwords,
 	Username and password pairs can be given in the command
-	At the same time you can use username list file and password list file 
+	At the same time you can use username list file and password list file
+	PAY ATTENTION, This command uses OCI calls
+	Therefore you can be detected by database audit.
 
         Syntax
         ----------
@@ -205,9 +199,23 @@ class REPL(Cmd):
 
     def do_mssql_brute_null_passwd (self,args):
 
-        """ ora_connect tries to connect ORacle database
-            mssql_brute_null_passwd -s server_name -p port -user usernames
-   
+        """ 
+        Command Name : mssql_brute_null_passwd
+​
+        Explanation
+        -----------
+        mssql_brute_null_passwd tries to connect MS SQL Server database with null passwords.
+        You only need to enter username list to test them with null password
+	PAY ATTENTION, This command uses ODBC connect
+	Therefore you can be detected by database audit
+
+        Syntax
+        ----------
+        mssql_brute_null_passwd -s <servername> ,-p  <port_number> ,-user  <username_list>   
+	 
+        Samples
+        ---------
+        mssql_brute_null_passwd  -s 192.168.0.28 -p 1433  -user sa,nonsa,master
         
         """
         mssql_connect_null_passwd (args)
@@ -220,9 +228,10 @@ class REPL(Cmd):
 ​
         Explanation
         -----------
-	mssql_brute tries to connect Oracle database 
-        with given credential file
-	This file contains; Username, Password pairs.
+        mssql_brute tries to connect MS SQL Server database  with given credential file
+        This file contains; Username, Password pairs.
+	PAY ATTENTION, This command uses ODBC connect
+	Therefore you can be detected by database audit
 
         Syntax
         ----------
@@ -246,7 +255,10 @@ class REPL(Cmd):
 	ora_brute tries to connect Oracle database 
         with given ucredential file
 	This file contains; Username, Password pairs.
+	PAY ATTENTION, This command uses OCI calls
+	Therefore you can be detected by database audit.
 
+	
         Syntax
         ----------
         ora_brute_file -s <servername> ,-p  <port_number> , -sid <sid_name> -cred_file  <usercredential_file>   
@@ -269,23 +281,9 @@ class REPL(Cmd):
 
 if __name__ == '__main__':
     print(' ')
-    print("dbhack program ver 1.0 Developed by Y. Anıl Akduygu in Sile/Istanbul")
+    print("DBHack program ver 1.0 Developed by Y. Anıl Akduygu in Sile - Istanbul")
     print(" ")
-    print(' You can use below commands')
-    print(" ")
-    print(' ORACLE Commands ')
-    print(" ")
-    print(' --> ora_chk ')
-    print(' --> ora_sid  ')
-    print(' --> ora_brute ')
-    print(' --> ora_brute_file  ')
-    print(" ")
-    print(' MSSQL Commands ')
-    print(" ")
-    print(' --> mssql_chk_browser   ')
-    print(' --> mssql_chk_odbc   ')
-    print(' --> mssql_brute ')
-    print(' --> mssql_brute_file ')
+    commands(" ")
     print(" ")
     app = REPL()
     app.cmdloop()
