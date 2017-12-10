@@ -1,6 +1,0 @@
--s correct_server -p correct_port -sid correct_sid -user correct_username      -passwd correct_passwd  		: Success
--s correct_server -p correct_port -sid correct_sid -user fake_username   OR    -passwd uncorrect_passwd :   ORA-01017 : invalid username/password; logon denied username,password 	-- brute force 
--s correct_server -p correct_port -sid correct_sid -user fake_username         -passwd faket_passwd         ORA-12505 : TNS: listener does not currently know of SID --sid test
-                                                                                                            ORA-12514:
--s correct_server -p correct_port -sid fake_sid    -user fake_username         -passwd faket_passwd         ORA-12541 : TNS:no listener 											-- Oracle listener listens
--s correct_server -p fake_port    -sid fake_sid    -user fake_username         -passwd faket_passwd         ORA-12545 : Connect failed because target host or object does not exist -- server test
