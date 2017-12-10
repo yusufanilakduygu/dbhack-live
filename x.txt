@@ -1,2 +1,0 @@
-mssql_chk_odbc -s OPCCNSQL -p 1433-1445   
- 
