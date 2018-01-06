@@ -1,4 +1,3 @@
-
 from dbhack_parser import *
 import socket
 import itertools
@@ -34,9 +33,15 @@ def tns_ping(p_servername,p_port):
     0x43, 0x54, 0x5f, 0x44, 0x41, 0x54, 0x41, 0x3d, 
     0x28, 0x43, 0x4f, 0x4d, 0x4d, 0x41, 0x4e, 0x44, 
     0x3d, 0x70, 0x69, 0x6e, 0x67, 0x29, 0x29 ] )
-
-    sock.send(send_msg)
-    msg = sock.recv(2048)
+    try:	
+    	sock.send(send_msg)
+    	msg = sock.recv(2048)
+    except Exception as error:
+        print("")
+        print('  After port connection Error ' + str(error))
+        print("")
+        sock.close()
+        return
     decoded_msg=msg.decode('ascii')
     i=decoded_msg.find('ERR=0')
     if i != -1:
@@ -44,8 +49,10 @@ def tns_ping(p_servername,p_port):
         print('    Listener Name : ',msg.decode('ascii')[msg.decode('ascii').find("ALIAS=")+6:-2], end="")
         print()
     else:
-        print ("Oracle Listener Not Found")
+        print ("  Oracle Listener Not Found")
         print()
+        sock.close()
+        return
 
   # message to send (CONNECT_DATA=(COMMAND=version))
 
@@ -299,4 +306,4 @@ def ora_connect_test( p_server,p_port,p_sid,p_user,p_passwd):
         return
     print(' Connection is Successfull DB version ',connection.version)
     connection.close
-    return  
+    return
